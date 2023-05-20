@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 
+/* SVGs for testing */
+import IconArrowDown from '../components/svgs/IconArrowDown';
+import IconMoon from '../components/svgs/IconMoon';
+import IconNewWindow from '../components/svgs/IconNewWindow';
+import IconPlay from '../components/svgs/IconPlay';
+import IconSearch from '../components/svgs/IconSearch';
+import Logo from '../components/svgs/Logo';
+
 const HomeScreen = () => {
   const [word, setWord] = useState('');
   const [definition, setDefinition] = useState('');
@@ -18,6 +26,12 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+      <IconArrowDown />
+      <IconMoon />
+      <IconNewWindow />
+      <IconPlay />
+      <IconSearch />
+      <Logo />
       <Text style={styles.title}>Dictionary App</Text>
       <TextInput
         style={styles.input}
