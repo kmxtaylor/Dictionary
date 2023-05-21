@@ -3,6 +3,14 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-nativ
 import axios from 'axios';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 
+/* SVGs for testing */
+import IconArrowDown from '../components/svgs/IconArrowDown';
+import IconMoon from '../components/svgs/IconMoon';
+import IconNewWindow from '../components/svgs/IconNewWindow';
+import IconPlay from '../components/svgs/IconPlay';
+import IconSearch from '../components/svgs/IconSearch';
+import Logo from '../components/svgs/Logo';
+
 const HomeScreen = () => {
   const [word, setWord] = useState('');
   const [searchedWord, setSearchedWord] = useState(''); 
