@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+// import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text } from 'components/themed';
 import axios from 'axios';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import IconSearch from 'components/svgs/IconSearch';
@@ -106,7 +108,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginHorizontal: 10,
     color: 'hsl(0, 0%, 2%)',
-    fontWeight: 'bold',
   },
   searchButton: {
     //backgroundColor: '#4285f4' ,
@@ -123,7 +124,6 @@ const styles = StyleSheet.create({
   },
   searchedWord: {
     fontSize: 30,
-    fontWeight: 'bold',
     marginVertical: 10,
     marginLeft: 30,
     //color: 'hsl(0, 0%, 2%)',

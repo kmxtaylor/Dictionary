@@ -1,5 +1,5 @@
-// import { SafeAreaView, StatusBar } from 'components/themed';
-import { SafeAreaView, StatusBar } from 'react-native';
+// import { SafeAreaView, StatusBar } from 'react-native';
+import { SafeAreaView, StatusBar } from 'components/themed';
 
 const Main = ({children}) => {
   return (
