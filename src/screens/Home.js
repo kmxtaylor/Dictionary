@@ -1,16 +1,22 @@
 import { useState } from 'react';
 // import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import { View, Text } from 'components/themed';
 import axios from 'axios';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
+
+import Layout from 'layouts/Main';
+import { View, Text } from 'components/themed';
 import IconSearch from 'components/svgs/IconSearch';
+
+import { useTheme } from 'hooks/useTheme';
 
 const Home = () => {
   const [word, setWord] = useState('');
   const [searchedWord, setSearchedWord] = useState(''); 
   const [definition, setDefinition] = useState('');
   const [prounciation, setProunciation] = useState('');
+
+  const { colors } = useTheme();
 
   const handleSearch = async () => {
     try {
@@ -60,38 +66,38 @@ const Home = () => {
   };
 
   return (
-    
-    <ScrollView style={styles.container}>
-      <View style={styles.searchBar}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search for any word..."
-          value={word}
-          onChangeText={text => setWord(text)}
-        />
-        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-          {/* <Text style={styles.searchButtonText}>Search</Text> */}
-          <IconSearch color="blue" width={18} height={18} />
-        </TouchableOpacity>
-      </View>
-        {definition ? (
-          <View style={styles.definitionContainer}>
-            <Text style={styles.searchedWord}>{searchedWord}</Text>
-            <Text style={styles.definition}>{definition}</Text>
-          </View>
-        ) : null}
-    </ScrollView>
-      
+    <Layout>
+      <ScrollView style={{ padding: 20 }} keyboardShouldPersistTaps='handled'>
+        <View style={styles.searchBar}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search for any word..."
+            value={word}
+            onChangeText={text => setWord(text)}
+          />
+          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+            {/* <Text style={styles.searchButtonText}>Search</Text> */}
+            <IconSearch color={colors.purple} width={18} height={18} />
+          </TouchableOpacity>
+        </View>
+          {definition ? (
+            <View style={styles.definitionContainer}>
+              <Text style={styles.searchedWord}>{searchedWord}</Text>
+              <Text style={styles.definition}>{definition}</Text>
+            </View>
+          ) : null}
+      </ScrollView>
+    </Layout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //alignItems: 'center',
-    //justifyContent: 'center',
-    backgroundColor: 'hsl(0, 0%, 100%)',
-  },
+  // container: {
+  //   flex: 1,
+  //   //alignItems: 'center',
+  //   //justifyContent: 'center',
+  //   backgroundColor: 'hsl(0, 0%, 100%)',
+  // },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -100,7 +106,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 25,
     borderRadius: 15,
     backgroundColor: 'hsl(0, 0%, 91%)',
-    
   },
   searchInput: {
     flex: 1,
