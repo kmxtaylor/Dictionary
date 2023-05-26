@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
-import IconSearch from '../../components/svgs/IconSearch';
 
 const Home = () => {
   const [word, setWord] = useState('');
