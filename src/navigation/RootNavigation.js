@@ -25,10 +25,8 @@ const RootNavigation = () => {
   const navigationTheme = {
     ...DefaultTheme,
     colors: {
-      ...DefaultTheme.colors,
-      // primary: colors.primary,
-      background: colors.background,
-      text: colors.text,
+      ...DefaultTheme.colors, // this is affecting the header background color, among other things
+      ...colors,
       border: 'transparent',
     },
   };
