@@ -12,12 +12,12 @@ import Page1Screen from 'screens/Page1Screen';
 import Page2Screen from 'screens/Page2Screen';
 
 /* SVGs for testing */
-import IconArrowDown from '../components/svgs/IconArrowDown';
-import IconMoon from '../components/svgs/IconMoon';
-import IconNewWindow from '../components/svgs/IconNewWindow';
-import IconPlay from '../components/svgs/IconPlay';
-import IconSearch from '../components/svgs/IconSearch';
-import Logo from '../components/svgs/Logo';
+import IconArrowDown from 'components/svgs/IconArrowDown';
+import IconMoon from 'components/svgs/IconMoon';
+import IconNewWindow from 'components/svgs/IconNewWindow';
+import IconPlay from 'components/svgs/IconPlay';
+import IconSearch from 'components/svgs/IconSearch';
+import Logo from 'components/svgs/Logo';
 
 // Create the bottom tab navigator
 const Tab = createBottomTabNavigator();
