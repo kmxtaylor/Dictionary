@@ -75,6 +75,7 @@ const Home = () => {
           <TextInput
             style={[{color: colors.text}, styles.searchInput]}
             placeholder="Search for any word..."
+            placeholderTextColor={colors.text}
             value={word}
             onChangeText={text => setWord(text)}
           />
