@@ -11,7 +11,11 @@ export const View = ({ style, ...rest }) => {
 
   return (
     <DefaultView
-      style={[{ backgroundColor: colors.background }, style]}
+      style={[{
+        backgroundColor:
+          // style?.backgroundColor ??
+          colors.background
+      }, style]}
       {...rest}
     />
   );

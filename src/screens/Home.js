@@ -18,6 +18,8 @@ const Home = () => {
 
   const { colors } = useTheme();
 
+  console.log(colors);
+
   const handleSearch = async () => {
     try {
       const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
@@ -68,16 +70,16 @@ const Home = () => {
   return (
     <Layout>
       <ScrollView style={{ padding: 20 }} keyboardShouldPersistTaps='handled'>
-        <View style={styles.searchBar}>
+        {/* consider moving searchBar to components/themed/SearchBar.js */}
+        <View style={[{backgroundColor: colors.backgroundSecondary}, styles.searchBar]}>
           <TextInput
-            style={styles.searchInput}
+            style={[{color: colors.text}, styles.searchInput]}
             placeholder="Search for any word..."
             value={word}
             onChangeText={text => setWord(text)}
           />
           <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-            {/* <Text style={styles.searchButtonText}>Search</Text> */}
-            <IconSearch color={colors.purple} width={18} height={18} />
+            <IconSearch color={colors.accent} width={18} height={18} />
           </TouchableOpacity>
         </View>
           {definition ? (
@@ -92,41 +94,27 @@ const Home = () => {
 };
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   //alignItems: 'center',
-  //   //justifyContent: 'center',
-  //   backgroundColor: 'hsl(0, 0%, 100%)',
-  // },
   searchBar: {
     flexDirection: 'row',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // margin: 10,
-    // marginHorizontal: 25,
     borderRadius: 15,
-    backgroundColor: 'hsl(0, 0%, 91%)',
+    // backgroundColor: '#757575',
   },
   searchInput: {
     flex: 1,
     height: 40,
     padding: 10,
     marginHorizontal: 10,
-    color: 'hsl(0, 0%, 2%)',
+    // color: 'hsl(0, 0%, 2%)',
   },
   searchButton: {
-    //backgroundColor: '#4285f4' ,
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center', // Add this line to center the icon horizontally
-    justifyContent: 'center', // Add this line to center the icon vertically
-    width: 40, // Adjust the width to your preference
-    height: 40, // Adjust the height to your preference
+    alignItems: 'center', // center horizontally
+    justifyContent: 'center', // center vertically
+    width: 40,
+    height: 40,
   },
-  searchButtonText: {
-    color: '#fff',
-    fontSize: 18,
-  },
+
   searchedWord: {
     fontSize: 30,
     marginVertical: 10,

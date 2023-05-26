@@ -47,8 +47,8 @@ const BottomTabs = () => {
   const { colors } = useTheme();
 
   return (
-    // <NavigationContainer>
     <Tab.Navigator
+      initialRouteName='Dictionary'
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color }) => {
           let icon = null;
@@ -62,20 +62,22 @@ const BottomTabs = () => {
           }
           return icon;
         },
+        // tabBarActiveTintColor: colors.tabBarActiveTintColor,
+        // tabBarInactiveTintColor: colors.tabBarInactiveTintColor,
       })}
       tabBarStyle={{
         display: 'flex',
       }}
-      tabBarActiveTintColor={colors.tabBarActiveTintColor}
-      tabBarInactiveTintColor={colors.tabBarInactiveTintColor}
+      // tabBarActiveTintColor={colors.tabBarActiveTintColor}
+      // tabBarInactiveTintColor={colors.tabBarInactiveTintColor}
       // tabBarActiveTintColor="#000000"
       // tabBarInactiveTintColor="#999999"
+      // tabBarInactiveTintColor={colors.purple}
     >
       <Tab.Screen name="Dictionary" component={HomeStack} />
       <Tab.Screen name="Settings: Fonts" component={FontSettingsStack} />
       <Tab.Screen name="Settings: Themes" component={ThemeSettingsStack} />
     </Tab.Navigator>
-    // </NavigationContainer>
   );
 };
 
