@@ -1,10 +1,9 @@
-import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const Page2Screen = () => {
+const ThemeSettings = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Page 2</Text>
+      <Text style={styles.text}>ThemeSettings</Text>
     </View>
   );
 };
@@ -22,4 +21,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Page2Screen;
+export default ThemeSettings;

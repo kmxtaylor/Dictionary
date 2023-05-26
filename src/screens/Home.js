@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import IconSearch from '../../components/svgs/IconSearch';
 
-const HomeScreen = () => {
+const Home = () => {
   const [word, setWord] = useState('');
   const [searchedWord, setSearchedWord] = useState(''); 
   const [definition, setDefinition] = useState('');
@@ -141,4 +141,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default Home;

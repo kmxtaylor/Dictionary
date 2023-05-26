@@ -7,9 +7,9 @@ import { Svg, Path, Text } from 'react-native-svg';
 import { G } from "react-native-svg"
 
 // Import the different screens
-import HomeScreen from 'screens/HomeScreen';
-import Page1Screen from 'screens/Page1Screen';
-import Page2Screen from 'screens/Page2Screen';
+import Home from 'screens/Home';
+import FontSettings from 'screens/FontSettings';
+import ColorSettings from 'screens/ColorSettings';
 
 /* SVGs for testing */
 import IconArrowDown from 'components/svgs/IconArrowDown';
@@ -26,21 +26,21 @@ const Stack = createStackNavigator();
 // Create the Home stack
 const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Home" component={HomeScreen} />
+    <Stack.Screen name="Home" component={Home} />
   </Stack.Navigator>
 );
 
-// Create the Page1 stack
-const Page1Stack = () => (
+// Create the Font Settings stack
+const FontSettingsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Page1" component={Page1Screen} />
+    <Stack.Screen name="Font Settings" component={FontSettings} />
   </Stack.Navigator>
 );
 
-// Create the Page2 stack
-const Page2Stack = () => (
+// Create the Theme Settings stack
+const ThemeSettingsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Page2" component={Page2Screen} />
+    <Stack.Screen name="Theme Settings" component={ThemeSettings} />
   </Stack.Navigator>
 );
 
@@ -120,8 +120,8 @@ const App = () => {
         tabBarInactiveTintColor="#999999"
       >
         <Tab.Screen name="Dictionary" component={HomeStack} />
-        <Tab.Screen name="Settings: Fonts" component={Page1Stack} />
-        <Tab.Screen name="Settings: Themes" component={Page2Stack} />
+        <Tab.Screen name="Settings: Fonts" component={FontSettingsStack} />
+        <Tab.Screen name="Settings: Themes" component={ThemeSettingsStack} />
       </Tab.Navigator>
     </NavigationContainer>
   );

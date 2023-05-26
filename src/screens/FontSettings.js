@@ -1,10 +1,9 @@
-import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const Page1Screen = () => {
+const FontSettings = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Page 1</Text>
+      <Text style={styles.text}>Font Settings</Text>
     </View>
   );
 };
@@ -22,4 +21,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Page1Screen;
+export default FontSettings;
