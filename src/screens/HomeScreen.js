@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import IconSearch from '../../components/svgs/IconSearch';
 
 const HomeScreen = () => {
   const [word, setWord] = useState('');
@@ -29,7 +30,7 @@ const HomeScreen = () => {
         
         // Mapping through the definitions array and formatting each definition.
         const formattedDefinitions = definitions.map((def, index) => { 
-          // Adding the index number to each definition.
+          // Adding the bullet point to each definition.
           return `\u2022 ${def.definition}`; 
         });
 
@@ -67,10 +68,10 @@ const HomeScreen = () => {
           onChangeText={text => setWord(text)}
         />
         <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-          <Text style={styles.searchButtonText}>Search</Text>
+          {/* <Text style={styles.searchButtonText}>Search</Text> */}
+          <IconSearch color="blue" width={18} height={18} />
         </TouchableOpacity>
       </View>
-     
         {definition ? (
           <View style={styles.definitionContainer}>
             <Text style={styles.searchedWord}>{searchedWord}</Text>
@@ -108,9 +109,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   searchButton: {
-    backgroundColor: '#4285f4' ,
+    //backgroundColor: '#4285f4' ,
     padding: 10,
     borderRadius: 5,
+    alignItems: 'center', // Add this line to center the icon horizontally
+    justifyContent: 'center', // Add this line to center the icon vertically
+    width: 40, // Adjust the width to your preference
+    height: 40, // Adjust the height to your preference
   },
   searchButtonText: {
     color: '#fff',
