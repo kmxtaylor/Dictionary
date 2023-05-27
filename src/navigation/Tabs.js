@@ -23,28 +23,28 @@ import FontMappings from 'constants/FontMappings';
 
 // Create the bottom tab navigator
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+// const Stack = createStackNavigator();
 
-// Create the Home stack
-const HomeStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name='Home' component={Home} />
-  </Stack.Navigator>
-);
+// // Create the Home stack
+// const HomeStack = () => (
+//   <Stack.Navigator screenOptions={{ headerShown: false }}>
+//     <Stack.Screen name='Home' component={Home} />
+//   </Stack.Navigator>
+// );
 
-// Create the Font Settings stack
-const FontSettingsStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name='FontSettings' component={FontSettings} />
-  </Stack.Navigator>
-);
+// // Create the Font Settings stack
+// const FontSettingsStack = () => (
+//   <Stack.Navigator screenOptions={{ headerShown: false }}>
+//     <Stack.Screen name='FontSettings' component={FontSettings} />
+//   </Stack.Navigator>
+// );
 
-// Create the Theme Settings stack
-const ThemeSettingsStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name='ThemeSettings' component={ThemeSettings} />
-  </Stack.Navigator>
-);
+// // Create the Theme Settings stack
+// const ThemeSettingsStack = () => (
+//   <Stack.Navigator screenOptions={{ headerShown: false }}>
+//     <Stack.Screen name='ThemeSettings' component={ThemeSettings} />
+//   </Stack.Navigator>
+// );
 
 const Tabs = () => {
   const { colors } = useTheme();
@@ -54,13 +54,15 @@ const Tabs = () => {
     <Tab.Navigator
       initialRouteName='Fonts'
       screenOptions={({ route }) => ({
-        // tabBarIcon: () => tabBarIcon(route),
         tabBarActiveTintColor: colors.tabBarActive,
         tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarStyle: {
           display: 'flex',
           backgroundColor: colors.backgroundSecondary,
           fontFamily: FontMappings[font].regular,
+          height: 80,
+          paddingBottom: 10,
+          // paddingVertical: 10,
         },
         headerStyle: {
           backgroundColor: colors.backgroundSecondary,
@@ -75,7 +77,7 @@ const Tabs = () => {
     >
       <Tab.Screen
         name='dictionary'
-        component={HomeStack} 
+        component={Home} 
         options={{
           title: 'Dictionary',
           tabBarIcon: (props) => (
@@ -85,7 +87,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name='fonts'
-        component={FontSettingsStack}
+        component={FontSettings}
         options={{
           title: 'Font Selection',
           tabBarIcon: (props) => (
@@ -95,7 +97,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name='themes' 
-        component={ThemeSettingsStack}
+        component={ThemeSettings}
         options={{
           title: 'Theme Selection',
           tabBarIcon: (props) => (
