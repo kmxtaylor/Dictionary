@@ -32,7 +32,7 @@ const Themes = {
   dark: {
     text: white,
 
-    line: grayLight,
+    line: gray,
     subHeading: gray,
 
     background: black,
