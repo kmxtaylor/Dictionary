@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
-import BottomTabs from 'navigation/BottomTabs';
+import Tabs from 'navigation/Tabs';
 import { useTheme } from 'hooks/useTheme';
 // import { useThemeColors } from 'hooks/useThemeColors';
 
@@ -48,7 +48,7 @@ const RootNavigation = () => {
     <NavigationContainer
       theme={navigationTheme}
     >
-      <BottomTabs />
+      <Tabs />
     </NavigationContainer>
   );
 };

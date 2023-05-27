@@ -43,7 +43,7 @@ const ThemeSettingsStack = () => (
   </Stack.Navigator>
 );
 
-const BottomTabs = () => {
+const Tabs = () => {
   const { colors } = useTheme();
 
   return (
@@ -52,7 +52,6 @@ const BottomTabs = () => {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color }) => {
           let icon = null;
-          
           if (route.name === 'Dictionary') {
             icon = <Logo color={color} />;
           } else if (route.name === 'Settings: Fonts') {
@@ -62,17 +61,16 @@ const BottomTabs = () => {
           }
           return icon;
         },
-        // tabBarActiveTintColor: colors.tabBarActiveTintColor,
-        // tabBarInactiveTintColor: colors.tabBarInactiveTintColor,
+        tabBarActiveTintColor: colors.tabBarActive,
+        tabBarInactiveTintColor: colors.tabBarInactive,
+        tabBarStyle: {
+          display: 'flex',
+          backgroundColor: colors.backgroundSecondary,
+        },
+        headerStyle: {
+          backgroundColor: colors.backgroundSecondary,
+        },
       })}
-      tabBarStyle={{
-        display: 'flex',
-      }}
-      // tabBarActiveTintColor={colors.tabBarActiveTintColor}
-      // tabBarInactiveTintColor={colors.tabBarInactiveTintColor}
-      // tabBarActiveTintColor="#000000"
-      // tabBarInactiveTintColor="#999999"
-      // tabBarInactiveTintColor={colors.purple}
     >
       <Tab.Screen name="Dictionary" component={HomeStack} />
       <Tab.Screen name="Settings: Fonts" component={FontSettingsStack} />
@@ -81,4 +79,4 @@ const BottomTabs = () => {
   );
 };
 
-export default BottomTabs;
+export default Tabs;
