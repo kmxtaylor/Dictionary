@@ -52,7 +52,7 @@ const Tabs = () => {
 
   return (
     <Tab.Navigator
-      initialRouteName='themes'
+      initialRouteName='home'
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: colors.tabBarActive,
         tabBarInactiveTintColor: colors.tabBarInactive,
@@ -76,7 +76,7 @@ const Tabs = () => {
       })}
     >
       <Tab.Screen
-        name='dictionary'
+        name='home'
         component={Home} 
         options={{
           title: 'Dictionary',
