@@ -4,12 +4,14 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import Tabs from 'navigation/Tabs';
 import { useTheme } from 'hooks/useTheme';
+import { useFont } from 'hooks/useFont';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 const RootNavigation = () => {
   const { theme, colors } = useTheme();
+  const { font } = useFont();
 
   const [fontsLoaded] = useFonts({
     'Inconsolata-Regular': require('/../assets/fonts/inconsolata/static/Inconsolata-Regular.ttf'),
@@ -33,7 +35,7 @@ const RootNavigation = () => {
   // wait for the theme and fonts to load before hiding the splash screen
   useEffect(() => {
     const fetchSetting = async () => {
-      if (!theme.loading && fontsLoaded) {
+      if (!theme.loading && !font.loading && fontsLoaded) {
         await SplashScreen.hideAsync();
       }
     };
@@ -41,7 +43,7 @@ const RootNavigation = () => {
   }, [theme.loading, fontsLoaded]);
 
   if (theme.loading) return null;
-  if (!fontsLoaded) return null;
+  if (font.loading || !fontsLoaded) return null;
 
   return (
     <NavigationContainer

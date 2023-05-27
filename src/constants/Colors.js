@@ -1,11 +1,11 @@
-export const white = '#FFFFFF';
-export const gray = '#757575';
-export const grayDark = '#3A3A3A';
-export const grayLight = '#E9E9E9';
-export const grayLightest = '#F4F4F4';
-export const black = '#050505';
-export const purple = '#A445ED';
-export const red = '#FF5252';
+const white = '#FFFFFF';
+const gray = '#757575';
+const grayDark = '#3A3A3A';
+const grayLight = '#E9E9E9';
+const grayLightest = '#F4F4F4';
+const black = '#050505';
+const purple = '#A445ED';
+const red = '#FF5252';
 
 const Themes = {
   light: {
@@ -41,4 +41,5 @@ const Themes = {
   },
 };
 
+export { Themes, white, gray, grayDark, grayLight, grayLightest, black, purple, red};
 export default Themes;

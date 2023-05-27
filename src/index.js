@@ -1,13 +1,16 @@
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-// import { ThemeProvider } from 'context/Theme';
+import { ThemeProvider } from 'contexts/Theme';
+import { FontProvider } from 'contexts/Font';
 import RootNavigation from 'navigation/RootNavigation';
 
 const App = () => {
   return (
     <SafeAreaProvider>
-      {/* <ThemeProvider> */}
+      <ThemeProvider>
+        <FontProvider>
           <RootNavigation />
-      {/* </ThemeProvider> */}
+        </FontProvider>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 };

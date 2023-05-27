@@ -1,7 +1,7 @@
-// import { View, Text, StyleSheet } from 'react-native';
+// import { View, TextBold, StyleSheet } from 'react-native';
 import { StyleSheet } from 'react-native';
 
-import { View, Text } from 'components/themed';
+import { View, Text, TextBold } from 'components/themed';
 import Layout from 'layouts/Main';
 
 const FontSettings = () => {
@@ -9,6 +9,8 @@ const FontSettings = () => {
     <Layout>
       <View style={{ padding: 20 }}>
         <Text style={styles.text}>Font Settings</Text>
+        <TextBold style={styles.text}>bold test</TextBold>
+        <TextBold style={[styles.text, styles.italic]}>bold italic test</TextBold>
       </View>
     </Layout>
   );
@@ -17,6 +19,9 @@ const FontSettings = () => {
 const styles = StyleSheet.create({
   text: {
     fontSize: 24,
+  },
+  italic: {
+    fontStyle: 'italic',
   },
 });
 

@@ -9,14 +9,12 @@ const ThemeContext = createContext({
   setTheme: () => {},
   colors: Colors['dark'],
   loading: true,
-  // fonts: Fonts['inter'],
 });
 
 const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState('dark');
   const [loading, setLoading] = useState(true);
   const colors = Colors[theme];
-  // fonts: Fonts[theme],
 
   // uncomment after confirming everything else works:
   // useEffect(() => {

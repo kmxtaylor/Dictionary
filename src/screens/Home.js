@@ -9,6 +9,8 @@ import { View, Text } from 'components/themed';
 import IconSearch from 'components/svgs/IconSearch';
 
 import { useTheme } from 'hooks/useTheme';
+import { useFont } from 'hooks/useFont';
+// import FontMappings from 'constants/FontMappings';
 
 const Home = () => {
   const [word, setWord] = useState('');
@@ -18,7 +20,7 @@ const Home = () => {
 
   const { colors } = useTheme();
 
-  console.log(colors);
+  console.log('colors:', colors);
 
   const handleSearch = async () => {
     try {
@@ -73,8 +75,11 @@ const Home = () => {
         {/* consider moving searchBar to components/themed/SearchBar.js */}
         <View style={[{backgroundColor: colors.backgroundSecondary}, styles.searchBar]}>
           <TextInput
-            style={[{color: colors.text}, styles.searchInput]}
-            placeholder="Search for any word..."
+            style={[
+              {color: colors.text, fontFamily: FontMappings[font].regular,},
+              styles.searchInput
+            ]}
+            placeholder="Search for a word..."
             placeholderTextColor={colors.text}
             value={word}
             onChangeText={text => setWord(text)}

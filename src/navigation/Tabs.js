@@ -17,6 +17,8 @@ import IconSearch from 'components/svgs/IconSearch';
 import Logo from 'components/svgs/Logo';
 
 import { useTheme } from 'hooks/useTheme';
+import { useFont } from 'hooks/useFont';
+// import FontMappings from 'constants/FontMappings';
 
 // Create the bottom tab navigator
 const Tab = createBottomTabNavigator();
@@ -32,31 +34,33 @@ const HomeStack = () => (
 // Create the Font Settings stack
 const FontSettingsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Font Settings" component={FontSettings} />
+    <Stack.Screen name="FontSettings" component={FontSettings} />
   </Stack.Navigator>
 );
 
 // Create the Theme Settings stack
 const ThemeSettingsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Theme Settings" component={ThemeSettings} />
+    <Stack.Screen name="ThemeSettings" component={ThemeSettings} />
   </Stack.Navigator>
 );
 
 const Tabs = () => {
   const { colors } = useTheme();
+  const { font } = useFont();
 
   return (
     <Tab.Navigator
-      initialRouteName='Dictionary'
+      initialRouteName='Fonts'
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color }) => {
+          // console.log(route);
           let icon = null;
           if (route.name === 'Dictionary') {
             icon = <Logo color={color} />;
-          } else if (route.name === 'Settings: Fonts') {
+          } else if (route.name === 'Fonts') {
             icon = <IconArrowDown color={color} />;
-          } else if (route.name === 'Settings: Themes') {
+          } else if (route.name === 'Themes') {
             icon = <IconMoon color={color} />;
           }
           return icon;
@@ -69,12 +73,13 @@ const Tabs = () => {
         },
         headerStyle: {
           backgroundColor: colors.backgroundSecondary,
+          // fontFamily: FontMappings[font].regular,
         },
       })}
     >
       <Tab.Screen name="Dictionary" component={HomeStack} />
-      <Tab.Screen name="Settings: Fonts" component={FontSettingsStack} />
-      <Tab.Screen name="Settings: Themes" component={ThemeSettingsStack} />
+      <Tab.Screen name="Fonts" component={FontSettingsStack} />
+      <Tab.Screen name="Themes" component={ThemeSettingsStack} />
     </Tab.Navigator>
   );
 };
