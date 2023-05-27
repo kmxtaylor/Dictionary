@@ -2,6 +2,7 @@
 // import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Ionicons } from '@expo/vector-icons';
 
 // Import the different screens
 import Home from 'screens/Home';
@@ -27,21 +28,21 @@ const Stack = createStackNavigator();
 // Create the Home stack
 const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Home" component={Home} />
+    <Stack.Screen name='Home' component={Home} />
   </Stack.Navigator>
 );
 
 // Create the Font Settings stack
 const FontSettingsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="FontSettings" component={FontSettings} />
+    <Stack.Screen name='FontSettings' component={FontSettings} />
   </Stack.Navigator>
 );
 
 // Create the Theme Settings stack
 const ThemeSettingsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="ThemeSettings" component={ThemeSettings} />
+    <Stack.Screen name='ThemeSettings' component={ThemeSettings} />
   </Stack.Navigator>
 );
 
@@ -73,7 +74,7 @@ const Tabs = () => {
       })}
     >
       <Tab.Screen
-        name="dictionary"
+        name='dictionary'
         component={HomeStack} 
         options={{
           title: 'Dictionary',
@@ -83,17 +84,17 @@ const Tabs = () => {
         }}
       />
       <Tab.Screen
-        name="fonts"
+        name='fonts'
         component={FontSettingsStack}
         options={{
           title: 'Font Selection',
           tabBarIcon: (props) => (
-            <IconArrowDown {...props} />
+            <Ionicons name='text-outline' {...props} />
           ),
         }}
       />
       <Tab.Screen
-        name="themes" 
+        name='themes' 
         component={ThemeSettingsStack}
         options={{
           title: 'Theme Selection',
