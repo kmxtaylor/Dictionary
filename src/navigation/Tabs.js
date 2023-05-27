@@ -23,28 +23,6 @@ import FontMappings from 'constants/FontMappings';
 
 // Create the bottom tab navigator
 const Tab = createBottomTabNavigator();
-// const Stack = createStackNavigator();
-
-// // Create the Home stack
-// const HomeStack = () => (
-//   <Stack.Navigator screenOptions={{ headerShown: false }}>
-//     <Stack.Screen name='Home' component={Home} />
-//   </Stack.Navigator>
-// );
-
-// // Create the Font Settings stack
-// const FontSettingsStack = () => (
-//   <Stack.Navigator screenOptions={{ headerShown: false }}>
-//     <Stack.Screen name='FontSettings' component={FontSettings} />
-//   </Stack.Navigator>
-// );
-
-// // Create the Theme Settings stack
-// const ThemeSettingsStack = () => (
-//   <Stack.Navigator screenOptions={{ headerShown: false }}>
-//     <Stack.Screen name='ThemeSettings' component={ThemeSettings} />
-//   </Stack.Navigator>
-// );
 
 const Tabs = () => {
   const { colors } = useTheme();
