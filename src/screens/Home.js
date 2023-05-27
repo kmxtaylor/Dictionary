@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
+// import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
-import IconSearch from '../../components/svgs/IconSearch';
 
-const HomeScreen = () => {
+import Layout from 'layouts/Main';
+import { View, Text } from 'components/themed';
+import IconSearch from 'components/svgs/IconSearch';
+
+import { useTheme } from 'hooks/useTheme';
+import { useFont } from 'hooks/useFont';
+import FontMappings from 'constants/FontMappings';
+
+const Home = () => {
   const [word, setWord] = useState('');
   const [searchedWord, setSearchedWord] = useState(''); 
   const [definition, setDefinition] = useState('');
   const [prounciation, setProunciation] = useState('');
+
+  const { colors } = useTheme();
+  const { font } = useFont();
+
+  // console.log('colors:', colors);
 
   const handleSearch = async () => {
     try {
@@ -58,72 +71,59 @@ const HomeScreen = () => {
   };
 
   return (
-    
-    <ScrollView style={styles.container}>
-      <View style={styles.searchBar}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search for any word..."
-          value={word}
-          onChangeText={text => setWord(text)}
-        />
-        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-          {/* <Text style={styles.searchButtonText}>Search</Text> */}
-          <IconSearch color="blue" width={18} height={18} />
-        </TouchableOpacity>
-      </View>
-        {definition ? (
-          <View style={styles.definitionContainer}>
-            <Text style={styles.searchedWord}>{searchedWord}</Text>
-            <Text style={styles.definition}>{definition}</Text>
-          </View>
-        ) : null}
-    </ScrollView>
-      
+    <Layout>
+      <ScrollView style={{ padding: 20 }} keyboardShouldPersistTaps='handled'>
+        {/* consider moving searchBar to components/themed/SearchBar.js */}
+        <View style={[{backgroundColor: colors.backgroundSecondary}, styles.searchBar]}>
+          <TextInput
+            style={[
+              {color: colors.text, fontFamily: FontMappings[font].regular,},
+              styles.searchInput
+            ]}
+            placeholder="Search for a word..."
+            placeholderTextColor={colors.text}
+            value={word}
+            onChangeText={text => setWord(text)}
+          />
+          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+            <IconSearch color={colors.accent} width={18} height={18} />
+          </TouchableOpacity>
+        </View>
+          {definition ? (
+            <View style={styles.definitionContainer}>
+              <Text style={styles.searchedWord}>{searchedWord}</Text>
+              <Text style={styles.definition}>{definition}</Text>
+            </View>
+          ) : null}
+      </ScrollView>
+    </Layout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //alignItems: 'center',
-    //justifyContent: 'center',
-    backgroundColor: 'hsl(0, 0%, 100%)',
-  },
   searchBar: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 10,
-    marginHorizontal: 25,
     borderRadius: 15,
-    backgroundColor: 'hsl(0, 0%, 91%)',
-    
+    // backgroundColor: '#757575',
   },
   searchInput: {
     flex: 1,
     height: 40,
     padding: 10,
     marginHorizontal: 10,
-    color: 'hsl(0, 0%, 2%)',
-    fontWeight: 'bold',
+    // color: 'hsl(0, 0%, 2%)',
   },
   searchButton: {
-    //backgroundColor: '#4285f4' ,
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center', // Add this line to center the icon horizontally
-    justifyContent: 'center', // Add this line to center the icon vertically
-    width: 40, // Adjust the width to your preference
-    height: 40, // Adjust the height to your preference
+    alignItems: 'center', // center horizontally
+    justifyContent: 'center', // center vertically
+    width: 40,
+    height: 40,
   },
-  searchButtonText: {
-    color: '#fff',
-    fontSize: 18,
-  },
+
   searchedWord: {
     fontSize: 30,
-    fontWeight: 'bold',
     marginVertical: 10,
     marginLeft: 30,
     //color: 'hsl(0, 0%, 2%)',
@@ -141,4 +141,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default Home;
