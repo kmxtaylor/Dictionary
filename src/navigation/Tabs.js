@@ -53,18 +53,7 @@ const Tabs = () => {
     <Tab.Navigator
       initialRouteName='Fonts'
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color }) => {
-          // console.log(route);
-          let icon = null;
-          if (route.name === 'Dictionary') {
-            icon = <Logo color={color} />;
-          } else if (route.name === 'Fonts') {
-            icon = <IconArrowDown color={color} />;
-          } else if (route.name === 'Themes') {
-            icon = <IconMoon color={color} />;
-          }
-          return icon;
-        },
+        // tabBarIcon: () => tabBarIcon(route),
         tabBarActiveTintColor: colors.tabBarActive,
         tabBarInactiveTintColor: colors.tabBarInactive,
         tabBarStyle: {
@@ -83,9 +72,36 @@ const Tabs = () => {
         },
       })}
     >
-      <Tab.Screen name="Dictionary" component={HomeStack} />
-      <Tab.Screen name="Fonts" component={FontSettingsStack} />
-      <Tab.Screen name="Themes" component={ThemeSettingsStack} />
+      <Tab.Screen
+        name="dictionary"
+        component={HomeStack} 
+        options={{
+          title: 'Dictionary',
+          tabBarIcon: (props) => (
+            <Logo {...props} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="fonts"
+        component={FontSettingsStack}
+        options={{
+          title: 'Font Selection',
+          tabBarIcon: (props) => (
+            <IconArrowDown {...props} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="themes" 
+        component={ThemeSettingsStack}
+        options={{
+          title: 'Theme Selection',
+          tabBarIcon: (props) => (
+            <IconMoon {...props} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };
