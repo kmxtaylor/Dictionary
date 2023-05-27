@@ -1,12 +1,14 @@
 import { useState } from 'react';
 // import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import { TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import axios from 'axios';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 
 import Layout from 'layouts/Main';
-import { View, Text } from 'components/themed';
+import { View, Text, TextBold } from 'components/themed';
 import IconSearch from 'components/svgs/IconSearch';
+import IconNewWindow from 'components/svgs/IconNewWindow';
+import IconPlay from 'components/svgs/IconPlay';
 
 import { useTheme } from 'hooks/useTheme';
 import { useFont } from 'hooks/useFont';
@@ -70,14 +72,89 @@ const Home = () => {
     }
   };
 
+  const playAudio = async () => {
+    alert('no audio yet');
+  };
+
+  const BulletPoint = ({style, ...props}) => (
+    <View
+      style={[{ height: 0, width: 1, borderWidth: 3, borderRadius: 5, borderColor: colors.accent }, style]} 
+      {...props}
+    />
+  );
+
+  const HorizontalLine = ({style, ...props}) => (
+    <View
+      style={[{ height: 0, borderWidth: 1, borderColor: colors.line }, style]} 
+      {...props}
+    />
+  );
+
+  const WordInfo = ({...props}) => {
+    let synonyms = ['synonym1', 'synonym2', 'synonym3']; // temp
+
+    return (
+      <View style={styles.wordInfoContainer}>
+        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 30}}>
+          <View>
+            <TextBold style={{fontSize: 30}}>{searchedWord || word || 'Example word'}</TextBold>
+            <Text style={{fontSize: 18, marginTop: 10, color: colors.accent, fontFamily: FontMappings['sans-serif'].regular}}>/Phonetics/</Text>
+          </View>
+          <TouchableOpacity
+            onPress={playAudio}
+          >
+            <IconPlay />
+          </TouchableOpacity>
+        </View>
+
+        {/* For each part of speech */}
+        <View>
+          <View style={{flexDirection: 'row', marginTop: 40, alignItems: 'center', justifyContent: 'center'}}>
+            <TextBold style={{fontStyle: 'italic', fontSize: 20, color: colors.text}}>PartOfSpeech</TextBold>
+            <HorizontalLine style={{flex: 1, marginLeft: 20}} />
+          </View>
+          <Text style={{marginTop: 40, fontSize: 18, color: colors.subHeading}}>Meaning</Text>
+          {/* For each definition */}
+          <View style={{flexDirection: 'row', marginTop: 20}}>
+            <BulletPoint style={{marginTop: 10}} />
+            <Text style={{marginLeft: 10, fontSize: 14, color: colors.text}}>definition</Text>
+          </View>
+          { synonyms && (
+            <View style={{flexDirection: 'row', marginTop: 40, alignItems: 'center'}}>
+              <Text style={{fontSize: 18, color: colors.subHeading}}>Synonyms</Text>
+              {/* <View style={{flex: 1, flexDirection: 'row',}}> */}
+                {/* For each synonym */}
+                { synonyms.map((syn, idx) => (
+                  <Text key={idx} style={{marginLeft: 10, fontSize: 14, color: colors.accent}}>{syn}</Text>
+                ))}
+              {/* </View> */}
+            </View>
+          )}
+        </View>
+
+        <View>
+          <HorizontalLine style={{marginTop: 40}} />
+          <Text style={{marginTop: 40, textDecorationLine: 'underline', fontSize: 18, color: colors.subHeading}}>Source(s)</Text>
+          <View style={{flexDirection: 'row', marginTop: 10, alignItems: 'center'}}>
+            {/* Not yet a functional link */}
+            <Text style={{textDecorationLine: 'underline', fontSize: 14, color: colors.text}}>Example Source</Text>
+            <IconNewWindow style={{marginTop: 5, marginLeft: 10}} />
+          </View>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <Layout>
       <ScrollView style={{ padding: 20 }} keyboardShouldPersistTaps='handled'>
-        {/* consider moving searchBar to components/themed/SearchBar.js */}
+        {/* When I move this, keyboard doesn't persist;
+        if figure that out,
+        consider moving searchBar to components/themed/SearchBar.js */}
         <View style={[{backgroundColor: colors.backgroundSecondary}, styles.searchBar]}>
           <TextInput
             style={[
-              {color: colors.text, fontFamily: FontMappings[font].regular,},
+              {color: colors.text, fontFamily: FontMappings[font].bold},
               styles.searchInput
             ]}
             placeholder="Search for a word..."
@@ -86,15 +163,11 @@ const Home = () => {
             onChangeText={text => setWord(text)}
           />
           <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-            <IconSearch color={colors.accent} width={18} height={18} />
+            <IconSearch color={colors.accent} />
           </TouchableOpacity>
         </View>
-          {definition ? (
-            <View style={styles.definitionContainer}>
-              <Text style={styles.searchedWord}>{searchedWord}</Text>
-              <Text style={styles.definition}>{definition}</Text>
-            </View>
-          ) : null}
+
+        <WordInfo />
       </ScrollView>
     </Layout>
   );
@@ -103,42 +176,43 @@ const Home = () => {
 const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
-    borderRadius: 15,
-    // backgroundColor: '#757575',
+    alignItems: 'center',
+    borderRadius: 20,
+    height: 50,
   },
   searchInput: {
     flex: 1,
     height: 40,
     padding: 10,
-    marginHorizontal: 10,
-    // color: 'hsl(0, 0%, 2%)',
+    marginHorizontal: 15,
+    fontSize: 18
   },
   searchButton: {
-    padding: 10,
+    marginHorizontal: 10,
     borderRadius: 5,
     alignItems: 'center', // center horizontally
     justifyContent: 'center', // center vertically
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
   },
 
-  searchedWord: {
-    fontSize: 30,
-    marginVertical: 10,
-    marginLeft: 30,
-    //color: 'hsl(0, 0%, 2%)',
-  },
-  definitionContainer: {
+  // searchedWord: {
+  //   fontSize: 30,
+  //   marginVertical: 10,
+  //   marginLeft: 30,
+  //   //color: 'hsl(0, 0%, 2%)',
+  // },
+  wordInfoContainer: {
     flex: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
+    // alignItems: 'flex-start',
+    // justifyContent: 'flex-start',
     //marginBottom: 20,
   },
-  definition: {
-    fontSize: 20,
-    marginHorizontal: 30,
-    //marginTop: 20,
-  },
+  // definition: {
+  //   fontSize: 20,
+  //   marginHorizontal: 30,
+  //   //marginTop: 20,
+  // },
 });
 
 export default Home;
