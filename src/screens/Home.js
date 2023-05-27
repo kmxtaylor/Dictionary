@@ -10,7 +10,7 @@ import IconSearch from 'components/svgs/IconSearch';
 
 import { useTheme } from 'hooks/useTheme';
 import { useFont } from 'hooks/useFont';
-// import FontMappings from 'constants/FontMappings';
+import FontMappings from 'constants/FontMappings';
 
 const Home = () => {
   const [word, setWord] = useState('');
@@ -19,8 +19,9 @@ const Home = () => {
   const [prounciation, setProunciation] = useState('');
 
   const { colors } = useTheme();
+  const { font } = useFont();
 
-  console.log('colors:', colors);
+  // console.log('colors:', colors);
 
   const handleSearch = async () => {
     try {

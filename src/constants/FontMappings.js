@@ -1,4 +1,4 @@
-export const FontMappings = {
+const FontMappings = {
   'sans-serif': {
     regular: 'Inter-Regular',
     bold: 'Inter-Bold',
@@ -13,3 +13,5 @@ export const FontMappings = {
     bold: 'Inconsolata-Bold',
   },
 };
+
+export default FontMappings;

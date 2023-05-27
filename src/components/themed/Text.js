@@ -2,7 +2,7 @@ import { Text as DefaultText } from 'react-native';
 import { useTheme } from 'hooks/useTheme';
 import { useFont } from 'hooks/useFont';
 
-// import FontMappings from 'constants/FontMappings';
+import FontMappings from 'constants/FontMappings';
 
 // const FontMappings = {
 //   'sans-serif': {
@@ -29,7 +29,7 @@ const Text = ({ style, ...rest }) => {
       style={[
         {
           color: colors.text,
-          // fontFamily: FontMappings[font].regular
+          fontFamily: FontMappings[font].regular
         },
         style,
       ]}
@@ -49,13 +49,13 @@ const TextBold = ({ style, ...rest }) => {
     }, {});
   }
 
-  // let fontFam = FontMappings[font].bold;
-  // if (style?.fontStyle === 'italic' && (font === 'serif' || font === 'mono')) {
-  //   if (FontMappings[font]?.boldItalic) { // lora has separate boldItalic font
-  //     fontFam = FontMappings[font]?.boldItalic;
-  //   }
-  //   style.fontStyle = 'normal'; // lora & mono
-  // }
+  let fontFam = FontMappings[font].bold;
+  if (style?.fontStyle === 'italic' && (font === 'serif' || font === 'mono')) {
+    if (FontMappings[font]?.boldItalic) { // lora has separate boldItalic font
+      fontFam = FontMappings[font]?.boldItalic;
+    }
+    style.fontStyle = 'normal'; // lora & mono
+  }
 
   // console.log('Bold font:', fontFam, style?.fontStyle === 'italic', style);
 
@@ -64,7 +64,7 @@ const TextBold = ({ style, ...rest }) => {
       style={[
         {
           color: colors.text,
-          // fontFamily: fontFam
+          fontFamily: fontFam
         },
         style
       ]}

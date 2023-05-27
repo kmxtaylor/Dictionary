@@ -18,7 +18,7 @@ import Logo from 'components/svgs/Logo';
 
 import { useTheme } from 'hooks/useTheme';
 import { useFont } from 'hooks/useFont';
-// import FontMappings from 'constants/FontMappings';
+import FontMappings from 'constants/FontMappings';
 
 // Create the bottom tab navigator
 const Tab = createBottomTabNavigator();
@@ -70,10 +70,16 @@ const Tabs = () => {
         tabBarStyle: {
           display: 'flex',
           backgroundColor: colors.backgroundSecondary,
+          fontFamily: FontMappings[font].regular,
         },
         headerStyle: {
           backgroundColor: colors.backgroundSecondary,
-          // fontFamily: FontMappings[font].regular,
+        },
+        headerTitleStyle: {
+          fontFamily: FontMappings[font].regular,
+        },
+        tabBarLabelStyle: {
+          fontFamily: FontMappings[font].regular,
         },
       })}
     >
