@@ -52,7 +52,7 @@ const Tabs = () => {
 
   return (
     <Tab.Navigator
-      initialRouteName='Fonts'
+      initialRouteName='themes'
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: colors.tabBarActive,
         tabBarInactiveTintColor: colors.tabBarInactive,
