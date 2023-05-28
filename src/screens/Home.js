@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { TextInput, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import axios from 'axios';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import { A } from '@expo/html-elements';
 
 import Layout from 'layouts/Main';
 import { View, Text, TextBold } from 'components/themed';
@@ -16,7 +17,7 @@ import FontMappings from 'constants/FontMappings';
 
 const Home = () => {
   const [word, setWord] = useState('');
-  const [searchedWord, setSearchedWord] = useState(''); 
+  const [searchedWord, setSearchedWord] = useState(null); 
   const [definition, setDefinition] = useState('');
   const [prounciation, setProunciation] = useState('');
 
@@ -91,14 +92,36 @@ const Home = () => {
   );
 
   const WordInfo = ({...props}) => {
-    let synonyms = ['synonym1', 'synonym2', 'synonym3']; // temp
+    // console.log(searchedWord, searchedWord === null);
+
+    let tempWord = { // temp
+      phonetic: '/fəˈnɛtɪk/',
+      phonetics: [{
+        otherStuff: '',
+        audio: 'https://api.dictionaryapi.dev/media/pronunciations/en/keyboard-us.mp3',
+      }],
+      meanings: [
+        {
+          partOfSpeech: 'noun',
+          definitions: [
+            {
+              definition: 'loreum ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            },
+          ],
+          synonyms: ['synonym1', 'synonym2', 'synonym3'],
+        },
+      ],
+      sourceUrl: 'https://www.google.com',
+    };
 
     return (
       <View style={styles.wordInfoContainer}>
         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 30}}>
           <View>
-            <TextBold style={{fontSize: 30}}>{searchedWord || word || 'Example word'}</TextBold>
-            <Text style={{fontSize: 18, marginTop: 10, color: colors.accent, fontFamily: FontMappings['sans-serif'].regular}}>/Phonetics/</Text>
+            <TextBold style={{fontSize: 30}}>{searchedWord ?? 'Example word'}</TextBold>
+            { tempWord.phonetic && (
+              <Text style={{fontSize: 18, marginTop: 10, color: colors.accent, fontFamily: FontMappings['sans-serif'].regular}}>{tempWord.phonetic}</Text>
+            )}
           </View>
           <TouchableOpacity
             onPress={playAudio}
@@ -110,7 +133,7 @@ const Home = () => {
         {/* For each part of speech */}
         <View>
           <View style={{flexDirection: 'row', marginTop: 40, alignItems: 'center', justifyContent: 'center'}}>
-            <TextBold style={{fontStyle: 'italic', fontSize: 20, color: colors.text}}>PartOfSpeech</TextBold>
+            <TextBold style={{fontStyle: 'italic', fontSize: 20, color: colors.text}}>{tempWord.meanings[0].partOfSpeech}</TextBold>
             <HorizontalLine style={{flex: 1, marginLeft: 20}} />
           </View>
           <Text style={{marginTop: 40, fontSize: 18, color: colors.subHeading}}>Meaning</Text>
@@ -119,12 +142,12 @@ const Home = () => {
             <BulletPoint style={{marginTop: 10}} />
             <Text style={{marginLeft: 10, fontSize: 14, color: colors.text}}>definition</Text>
           </View>
-          { synonyms && (
+          { tempWord.meanings[0].synonyms && (
             <View style={{flexDirection: 'row', marginTop: 40, alignItems: 'center'}}>
               <Text style={{fontSize: 18, color: colors.subHeading}}>Synonyms</Text>
               {/* <View style={{flex: 1, flexDirection: 'row',}}> */}
                 {/* For each synonym */}
-                { synonyms.map((syn, idx) => (
+                { tempWord.meanings[0].synonyms.map((syn, idx) => (
                   <Text key={idx} style={{marginLeft: 10, fontSize: 14, color: colors.accent}}>{syn}</Text>
                 ))}
               {/* </View> */}
@@ -137,8 +160,12 @@ const Home = () => {
           <Text style={{marginTop: 40, textDecorationLine: 'underline', fontSize: 18, color: colors.subHeading}}>Source(s)</Text>
           <View style={{flexDirection: 'row', marginTop: 10, alignItems: 'center'}}>
             {/* Not yet a functional link */}
-            <Text style={{textDecorationLine: 'underline', fontSize: 14, color: colors.text}}>Example Source</Text>
-            <IconNewWindow style={{marginTop: 5, marginLeft: 10}} />
+            <A href={tempWord.sourceUrl}>
+              <Text style={{textDecorationLine: 'underline', fontSize: 14, color: colors.text}}>{tempWord.sourceUrl}</Text>
+              {/* margin wasn't working, so inserted space manually */}
+              <View style={{width: 10}} />
+              <IconNewWindow style={{marginTop: 5, marginLeft: 10}} />
+            </A>
           </View>
         </View>
       </View>
