@@ -113,7 +113,7 @@ const Home = () => {
       ],
       sourceUrl: 'https://www.google.com',
     };
-
+    
     return (
       <View style={styles.wordInfoContainer}>
         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 30}}>
@@ -140,7 +140,7 @@ const Home = () => {
           {/* For each definition */}
           <View style={{flexDirection: 'row', marginTop: 20}}>
             <BulletPoint style={{marginTop: 10}} />
-            <Text style={{marginLeft: 10, fontSize: 14, color: colors.text}}>definition</Text>
+            <Text style={{marginLeft: 10, fontSize: 14, color: colors.text}}>{tempWord?.meanings?.[0].definitions?.[0]?.definition ?? definition}</Text>
           </View>
           { tempWord.meanings[0].synonyms && (
             <View style={{flexDirection: 'row', marginTop: 40, alignItems: 'center'}}>
