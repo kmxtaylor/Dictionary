@@ -191,11 +191,10 @@ const Home = () => {
   
         <View>
           <HorizontalLine style={{ marginTop: 40 }} />
-          <Text style={{ marginTop: 40, textDecorationLine: 'underline', fontSize: 18, color: colors.subHeading }}>Source(s)</Text>
-          <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => Linking.openURL(sourceUrl)}>
+          <Text style={{ marginTop: 40, textDecorationLine: 'underline', fontSize: 18, color: colors.subHeading }}>Source</Text>
+          <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 50, alignItems: 'center' }}>
+            <TouchableOpacity style={{ flexDirection: 'row'}} onPress={() => Linking.openURL(sourceUrl)}>
               <Text style={{ textDecorationLine: 'underline', fontSize: 14, color: colors.text }}>{sourceUrl}</Text>
-              <View style={{ width: 10 }} />
               <IconNewWindow style={{ marginTop: 5, marginLeft: 10 }} />
             </TouchableOpacity>
           </View>
