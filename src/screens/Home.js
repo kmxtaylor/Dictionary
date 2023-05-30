@@ -109,7 +109,7 @@ const Home = () => {
     };
     
     return (
-      <View style={styles.wordInfoContainer} testID='home-screen'>
+      <View style={styles.wordInfoContainer}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 30 }}>
           <View>
             <TextBold style={{ fontSize: 30 }}>{searchedWord ?? 'Example word'}</TextBold>
@@ -206,7 +206,7 @@ const Home = () => {
   
   return (
     <Layout>
-      <ScrollView style={{ padding: 20 }} keyboardShouldPersistTaps='handled'>
+      <ScrollView style={{ padding: 20 }} keyboardShouldPersistTaps='handled' testID='home-screen'>
         <View style={[{ backgroundColor: colors.backgroundSecondary }, styles.searchBar]}>
           <TextInput
             style={[
