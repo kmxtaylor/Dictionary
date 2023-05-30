@@ -157,26 +157,6 @@ const Home = () => {
   );
 
   const WordInfo = ({ ...props }) => {
-    // let tempWord = { // temp
-    //   phonetic: '/fəˈnɛtɪk/',
-    //   phonetics: [{
-    //     otherStuff: '',
-    //     audio: 'https://api.dictionaryapi.dev/media/pronunciations/en/keyboard-us.mp3',
-    //   }],
-    //   meanings: [
-    //     {
-    //       partOfSpeech: 'noun',
-    //       definitions: [
-    //         {
-    //           definition: 'loreum ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-    //         },
-    //       ],
-    //       synonyms: ['synonym1', 'synonym2', 'synonym3'],
-    //     },
-    //   ],
-    //   sourceUrl: 'https://www.google.com',
-    // };
-
     if (!foundWord) {
       return null;
     }
@@ -273,28 +253,6 @@ const Home = () => {
                 </View>
               </View>
             )}
-
-            {/* Render the Examples title only if examples are provided */}
-            {/* {definition?.examples.length > 0 && (
-              <View style={{ flexDirection: 'column', marginTop: 40 }}>
-                <Text style={{ fontSize: 18, color: colors.subHeading }}>Example(s)</Text>
-                <View style={{ marginTop: 10 }}>
-                  {definition.examples.map((example, idx) => {
-                    if (example) {
-                      return (
-                        <Text
-                          style={{ color: colors.subHeading, fontSize: 14 }}
-                          key={{idx}}
-                        >
-                          "{example}"
-                        </Text>
-                      );
-                    }
-                    return null;
-                  })}
-                </View>
-              </View>
-            )} */}
           </View>
         ))}
 
