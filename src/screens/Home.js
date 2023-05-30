@@ -152,8 +152,16 @@ const Home = () => {
     return (
       <View style={styles.wordInfoContainer}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 30 }}>
-          <View>
-            <TextBold style={{ fontSize: 30 }}>{foundWord}</TextBold>
+          <View style={{ flexDirection: 'column' }}>
+            <View>
+              <TextBold style={{ fontSize: 30 }}>{foundWord}</TextBold>
+            </View>
+            {/* Display the phonetic */}
+            {phonetic && (
+            <View style={{ marginTop: 10 }}>
+              <Text style={{ fontSize: 20, color: colors.accent }}>{phonetic}</Text>
+            </View>
+            )}
           </View>
           { audioURL && (
             <TouchableOpacity onPress={playAudio}>
@@ -162,12 +170,6 @@ const Home = () => {
           )}
         </View>
 
-        {/* Display the phonetic */}
-        {phonetic && (
-        <View style={{ marginTop: 10 }}>
-          <Text style={{ fontSize: 20, color: colors.accent }}>{phonetic}</Text>
-        </View>
-        )}
   
         {definitions.map((definition, index) => (
           <View key={index}>
