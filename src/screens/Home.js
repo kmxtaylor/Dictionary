@@ -82,7 +82,7 @@ const Home = () => {
         const wordDefinitions = data.meanings.map((meaning, index) => {
           console.log(meaning?.definitions);
           return {
-            // key: index, // partially fixes duplicate key warning
+            key: index, // partially fixes duplicate key warning
             partOfSpeech: meaning?.partOfSpeech ?? '',
             definitions: meaning?.definitions.map(
               (def, idx) => def.definition ?? null
@@ -95,7 +95,7 @@ const Home = () => {
           };
         });
         setDefinitions(wordDefinitions);
-        console.log(JSON.stringify(wordDefinitions, null, 2));
+        // console.log(JSON.stringify(wordDefinitions, null, 2));
 
         // these don't seem necessary(?) & should be handled by definition:
         // setPartOfSpeech(data.meanings[0].partOfSpeech);
@@ -138,10 +138,6 @@ const Home = () => {
     }
   };
   
-  
-  
-
-
   const BulletPoint = ({ style, ...props }) => (
     <View
       style={[{ borderColor: colors.accent }, styles.bulletPoint, style]}
@@ -213,7 +209,7 @@ const Home = () => {
               <HorizontalLine style={{ marginLeft: 20 }} />
             </View>
             <Text
-              style={{ color: colors.subHeading, marginTop: 30, fontSize: 18 }}
+              style={{ color: colors.subHeading, marginTop: 30, fontSize: 16 }}
             >
               Meaning
             </Text>
@@ -228,7 +224,7 @@ const Home = () => {
                     example && (
                       <Text
                         key={{i}}
-                        style={[{ color: colors.subHeading, fontSize: 14 }, styles.meaningRow]}
+                        style={[{ color: colors.subHeading, fontSize: 14 }, styles.exampleRow]}
                       >
                         "{example}"
                       </Text>
@@ -240,17 +236,17 @@ const Home = () => {
 
             {definition?.synonyms.length > 0 && (
               <View style={styles.sectionRow}>
-                <Text style={{ color: colors.subHeading, fontSize: 18 }}>
+                <Text style={{ color: colors.subHeading, fontSize: 16 }}>
                   Synonyms
                 </Text>
                 <View style={styles.wrappingList}>
                   {definition.synonyms.map((syn, idx) => (
-                    <Text
+                    <TextBold
                       key={idx}
-                      style={{ color: colors.accent, marginLeft: 10, marginRight: 5, fontSize: 18 }}
+                      style={{ color: colors.accent, marginLeft: 10, marginRight: 5, fontSize: 14 }}
                     >
                       {syn}
-                    </Text>
+                    </TextBold>
                   ))}
                 </View>
               </View>
@@ -258,17 +254,17 @@ const Home = () => {
 
             {definition?.antonyms.length > 0 && (
               <View style={styles.sectionRow}>
-                <Text style={{ fontSize: 18, color: colors.subHeading }}>
+                <Text style={{ fontSize: 16, color: colors.subHeading }}>
                   Antonyms
                 </Text>
                 <View style={styles.wrappingList}>
                   {definition.antonyms.map((ant, idx) => (
-                    <Text
+                    <TextBold
                       key={idx}
-                      style={{ color: colors.accent, marginLeft: 10, marginRight: 5, fontSize: 18 }}
+                      style={{ color: colors.accent, marginLeft: 10, marginRight: 5, fontSize: 14 }}
                     >
                       {ant}
-                    </Text>
+                    </TextBold>
                   ))}
                 </View>
               </View>
@@ -405,6 +401,7 @@ const styles = StyleSheet.create({
   sectionRow: {
     flexDirection: 'row',
     marginTop: 30,
+    alignItems: 'center',
   },
   center: {
     alignItems: 'center',
@@ -416,21 +413,25 @@ const styles = StyleSheet.create({
   },
   meaningRow: { // includes bullet point
     flexDirection: 'row',
-    marginTop: 20,
+    marginTop: 15,
   },
   meaningCol: { // excludes bullet point
     flex: 1, // important so text doesn't get pushed off screen
   },
+  exampleRow: {
+    marginTop: 10,
+  },
   wrappingList: {
+    flex: 1, // important so text doesn't get pushed off screen
     flexDirection: 'row',
     flexWrap: 'wrap',
-    flex: 1, // important so text doesn't get pushed off screen
+    alignItems: 'center',
   },
 
   sourcesHeader: {
     marginTop: 30,
     textDecorationLine: 'underline',
-    fontSize: 18.
+    fontSize: 16.
   },
   sourceLink: {
     flexDirection: 'row',
