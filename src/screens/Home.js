@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TextInput, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity, Linking, LogBox } from 'react-native';
 import axios from 'axios';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -79,23 +79,27 @@ const Home = () => {
           setAudioURL(''); // No phonetics available for the Audio component
         }
 
+
+        LogBox.ignoreLogs(['Warning: Encountered two children with the same key, `[object Object]`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.']);
+
         const wordDefinitions = data.meanings.map((meaning, index) => {
-          console.log(meaning?.definitions);
+          // console.log(meaning?.definitions);
           return {
             key: index, // partially fixes duplicate key warning
             partOfSpeech: meaning?.partOfSpeech ?? '',
-            definitions: meaning?.definitions.map(
-              (def, idx) => def.definition ?? null
-            ),
-            examples: meaning?.definitions.map(
-              (def, idx) => def.example ?? null
-            ),
+            definitions: meaning?.definitions.map((def, idx) => (
+              def.definition ?? null
+            )),
+            examples: meaning?.definitions.map((def, idx) => (
+              def.example ?? null
+            )),
             synonyms: meaning?.synonyms ?? [],
             antonyms: meaning?.antonyms ?? [],
           };
         });
         setDefinitions(wordDefinitions);
         // console.log(JSON.stringify(wordDefinitions, null, 2));
+
 
         // these don't seem necessary(?) & should be handled by definition:
         // setPartOfSpeech(data.meanings[0].partOfSpeech);
@@ -108,7 +112,7 @@ const Home = () => {
       }
     } catch (error) {
       // resetWordStates(); // actually, just don't change state until word found
-      console.log('Error:', error?.data?.title || error); // doesn't show to user
+      console.log('Error!:', error?.data?.title || error); // doesn't show to user
       console.log('Error (detailed):', JSON.stringify(error.response, null, 2)); // doesn't show to user
       if (error?.response?.status === 404) {
         let err = `Word not found. Try again.`
