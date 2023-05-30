@@ -9,6 +9,7 @@ import IconSearch from 'components/svgs/IconSearch';
 import IconNewWindow from 'components/svgs/IconNewWindow';
 import IconPlay from 'components/svgs/IconPlay';
 
+import useIsMountedRef from 'hooks/useIsMountedRef';
 import { useTheme } from 'hooks/useTheme';
 import { useFont } from 'hooks/useFont';
 import FontMappings from 'constants/FontMappings';
@@ -32,6 +33,8 @@ const Home = () => {
 
   const { colors } = useTheme();
   const { font } = useFont();
+
+  const isMountedRef = useIsMountedRef();
 
   const resetWordStates = () => { // e.g. when no word found
     setFoundWord(null);
@@ -60,47 +63,49 @@ const Home = () => {
       const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${typedWord}`);
       const [ data ] = response.data;
 
-      resetWordStates(); // reset states before setting new states (in case fewer data states are defined for this word than the previous)
-      setFoundWord(data.word);
-      setPhonetic(data?.phonetic ?? null); // Set the phonetic of the word
+      if (isMountedRef.current) { // avoid bugs w/ state updates to unmounted components
+        resetWordStates(); // reset states before setting new states (in case fewer data states are defined for this word than the previous)
+        setFoundWord(data.word);
+        setPhonetic(data?.phonetic ?? null); // Set the phonetic of the word
 
-      // Check if phonetics exist and contain audio URLs.
-      if (data?.phonetics.length > 0) { // don't error out if no phonetics
-        const [ audioUrl ] = data.phonetics
-          .filter(phonetic => phonetic.audio) // Filter out phonetics without audio URLs
-          .map(phonetic => phonetic.audio); // Extract audio URLs
+        // Check if phonetics exist and contain audio URLs.
+        if (data?.phonetics.length > 0) { // don't error out if no phonetics
+          const [ audioUrl ] = data.phonetics
+            .filter(phonetic => phonetic.audio) // Filter out phonetics without audio URLs
+            .map(phonetic => phonetic.audio); // Extract audio URLs
 
-        setAudioURL(audioUrl ?? '');
-      } else {
-        setAudioURL(''); // No phonetics available for the Audio component
+          setAudioURL(audioUrl ?? '');
+        } else {
+          setAudioURL(''); // No phonetics available for the Audio component
+        }
+
+        const wordDefinitions = data.meanings.map((meaning, index) => {
+          console.log(meaning?.definitions);
+          return {
+            // key: index, // partially fixes duplicate key warning
+            partOfSpeech: meaning?.partOfSpeech ?? '',
+            definitions: meaning?.definitions.map(
+              (def, idx) => def.definition ?? null
+            ),
+            examples: meaning?.definitions.map(
+              (def, idx) => def.example ?? null
+            ),
+            synonyms: meaning?.synonyms ?? [],
+            antonyms: meaning?.antonyms ?? [],
+          };
+        });
+        setDefinitions(wordDefinitions);
+        console.log(JSON.stringify(wordDefinitions, null, 2));
+
+        // these don't seem necessary(?) & should be handled by definition:
+        // setPartOfSpeech(data.meanings[0].partOfSpeech);
+        // setSynonyms(data.meanings[0].synonyms ?? []);
+        // setAntonyms(data.meanings[0].antonyms ?? []);
+        // setExamples(data.meanings.map(meaning => meaning.definitions.map(definition => definition.example ?? '')));
+
+        setSourceUrls(data?.sourceUrls ?? []);
+        setErrorMsg(null);
       }
-
-      const wordDefinitions = data.meanings.map((meaning, index) => {
-        console.log(meaning?.definitions);
-        return {
-          // key: index, // partially fixes duplicate key warning
-          partOfSpeech: meaning?.partOfSpeech ?? '',
-          definitions: meaning?.definitions.map(
-            (def, idx) => def.definition ?? null
-          ),
-          examples: meaning?.definitions.map(
-            (def, idx) => def.example ?? null
-          ),
-          synonyms: meaning?.synonyms ?? [],
-          antonyms: meaning?.antonyms ?? [],
-        };
-      });
-      setDefinitions(wordDefinitions);
-      console.log(JSON.stringify(wordDefinitions, null, 2));
-
-      // these don't seem necessary(?) & should be handled by definition:
-      // setPartOfSpeech(data.meanings[0].partOfSpeech);
-      // setSynonyms(data.meanings[0].synonyms ?? []);
-      // setAntonyms(data.meanings[0].antonyms ?? []);
-      // setExamples(data.meanings.map(meaning => meaning.definitions.map(definition => definition.example ?? '')));
-
-      setSourceUrls(data?.sourceUrls ?? []);
-      setErrorMsg(null);
     } catch (error) {
       // resetWordStates(); // actually, just don't change state until word found
       console.log('Error:', error?.data?.title || error); // doesn't show to user
