@@ -21,78 +21,97 @@ const Home = () => {
   const [foundWord, setFoundWord] = useState(null);
   const [audio, setAudio] = useState(null);
   const [audioURL, setAudioURL] = useState('');
+  const [phonetic, setPhonetic] = useState(null);
   const [definitions, setDefinitions] = useState([]);
-  const [partOfSpeech, setPartOfSpeech] = useState('');
-  const [synonyms, setSynonyms] = useState([]);
-  const [antonyms, setAntonyms] = useState([]);
-  const [examples, setExamples] = useState([]);
-  const [phonetic, setPhonetic] = useState('');
+  // const [partOfSpeech, setPartOfSpeech] = useState('');
+  // const [synonyms, setSynonyms] = useState([]);
+  // const [antonyms, setAntonyms] = useState([]);
+  // const [examples, setExamples] = useState([]);
   const [sourceUrl, setSourceUrl] = useState('');
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const { colors } = useTheme();
   const { font } = useFont();
 
+  const resetWordStates = () => { // e.g. when no word found
+    setFoundWord(null);
+    setAudio(null);
+    setAudioURL('');
+    setPhonetic('');
+    setDefinitions([]);
+    // setPartOfSpeech('');
+    // setSynonyms([]);
+    // setAntonyms([]);
+    // setExamples([]); //
+    setSourceUrl('');
+
+    // don't reset errorMsg here, in case error is not resolved
+  };
+
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${typedWord}`);
-      const data = response.data[0];
+      if (typedWord === '') {
+        let err = `Search can't be blank.`
+        setErrorMsg(err);
+        alert(err); // delete this when you code an official display of the msg
+        return;
+      }
 
+      const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${typedWord}`);
+      const [ data ] = response.data;
+
+      resetWordStates(); // reset states before setting new states (in case fewer data states are defined for this word than the previous)
       setFoundWord(data.word);
-      setPhonetic(data.phonetic); // Set the phonetic of the word
+      setPhonetic(data?.phonetic ?? null); // Set the phonetic of the word
 
       // Check if phonetics exist and contain audio URLs.
-      if (data.phonetics && data.phonetics.length > 0) {
-        const audioUrls = data.phonetics
-          .filter(phonetic => phonetic.audio) // Filter out phonetics without audio URLs.
-          .map(phonetic => phonetic.audio); // Extract audio URLs.
+      if (data?.phonetics.length > 0) { // don't error out if no phonetics
+        const [ audioUrl ] = data.phonetics
+          .filter(phonetic => phonetic.audio) // Filter out phonetics without audio URLs
+          .map(phonetic => phonetic.audio); // Extract audio URLs
 
-        if (audioUrls.length > 0) {
-          // retrieves the first audio URL.
-          setAudioURL(audioUrls[0]);
-        } else {
-          setAudioURL(''); // No audio URL available.
-        }
+        setAudioURL(audioUrl ?? '');
       } else {
-        setAudioURL(''); // No phonetics available for the Audio component.
+        setAudioURL(''); // No phonetics available for the Audio component
       }
 
-      // Check if meanings exist and contain definitions.
-      if (data.meanings && data.meanings.length > 0) {
-        const wordDefinitions = data.meanings.map(meaning => {
-          //console.log(meaning.definitions[0].synonyms); // line to check synonyms
-          return {
-            partOfSpeech: meaning.partOfSpeech,
-            definitions: meaning.definitions.map(definition => {
-              //console.log(definition.synonyms); // line to check synonyms
-              return definition.definition;
-            }),
-            examples: meaning.definitions.map(definition => definition.example ?? ''),
-            synonyms: meaning.synonyms ?? [], // Collect synonyms of all definitions
-            antonyms: meaning.antonyms ?? [] // Collect antonyms of all definitions
-          };
-        });
-        setDefinitions(wordDefinitions);
-        setPartOfSpeech(data.meanings[0].partOfSpeech);
-        setSynonyms(data.meanings[0].synonyms ?? []);
-        setAntonyms(data.meanings[0].antonyms ?? []);
-        setExamples(data.meanings.map(meaning => meaning.definitions.map(definition => definition.example ?? '')));
-        console.log(wordDefinitions);
-      } else {
-        setDefinitions([]);
-        setPartOfSpeech('');
-        setSynonyms([]);
-        setAntonyms([]);
-        setExamples([]);
-      }
+      const wordDefinitions = data.meanings.map(meaning => {
+        return {
+          partOfSpeech: meaning?.partOfSpeech,
+          definitions: meaning?.definitions.map(def => {
+            //console.log(definition.synonyms); // line to check synonyms
+            return def.definition;
+          }),
+          examples: meaning?.definitions.map(def => def.example ?? ''),
+          synonyms: meaning?.synonyms ?? [],
+          antonyms: meaning?.antonyms ?? [],
+        };
+      });
+      setDefinitions(wordDefinitions);
+      console.log(wordDefinitions);
 
-      setSourceUrl(data.sourceUrls[0]);
+      // these don't seem necessary(?) & should be handled by definition:
+      // setPartOfSpeech(data.meanings[0].partOfSpeech);
+      // setSynonyms(data.meanings[0].synonyms ?? []);
+      // setAntonyms(data.meanings[0].antonyms ?? []);
+      // setExamples(data.meanings.map(meaning => meaning.definitions.map(definition => definition.example ?? '')));
+
+      setSourceUrl(data.sourceUrls[0]); // want to change this to an arr
+      setErrorMsg(null);
     } catch (error) {
-      setDefinitions([]);
-      setPartOfSpeech('');
-      setSynonyms([]);
-      setAntonyms([]);
-      setExamples([]);
-      console.error(error);
+      // resetWordStates(); // actually, just don't change state until word found
+      console.log('Error:', error?.data?.title || error); // doesn't show to user
+      console.log('Error (detailed):', JSON.stringify(error.response, null, 2)); // doesn't show to user
+      if (error?.response?.status === 404) {
+        let err = `Word not found. Try again.`
+        setErrorMsg(err);
+        alert(err); // delete this when you code an official display of the msg
+      }
+      else {
+        let err = `Can't parse word data. Try again.`
+        setErrorMsg(err);
+        alert(err); // delete this when you code an official display of the msg
+      }
     }
   };
 
