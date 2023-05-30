@@ -13,9 +13,14 @@ import { useTheme } from 'hooks/useTheme';
 import { useFont } from 'hooks/useFont';
 import FontMappings from 'constants/FontMappings';
 
+import { Audio, Permissions } from 'expo-av';
+//import { set } from 'react-native-reanimated';
+
 const Home = () => {
   const [word, setWord] = useState('');
   const [searchedWord, setSearchedWord] = useState(null);
+  const [audio, setAudio] = useState(null); 
+  const [audioURL, setAudioURL] = useState(''); 
   const [definitions, setDefinitions] = useState([]);
   const [partOfSpeech, setPartOfSpeech] = useState('');
   const [synonyms, setSynonyms] = useState([]);
@@ -34,7 +39,24 @@ const Home = () => {
   
       setSearchedWord(data.word);
       setPhonetic(data.phonetic); // Set the phonetic of the word
+     
+      // Check if phonetics exist and contain audio URLs.
+      if (data.phonetics && data.phonetics.length > 0) {
+        const audioUrls = data.phonetics
+          .filter(phonetic => phonetic.audio) // Filter out phonetics without audio URLs.
+          .map(phonetic => phonetic.audio); // Extract audio URLs.
 
+        if (audioUrls.length > 0) {
+          // retrieves the first audio URL.
+          setAudioURL(audioUrls[0]);
+        } else {
+          setAudioURL(''); // No audio URL available.
+        }
+      } else {
+        setAudioURL(''); // No phonetics available for the Audio component.
+      }
+
+      // Check if meanings exist and contain definitions.
       if (data.meanings && data.meanings.length > 0) {
         const wordDefinitions = data.meanings.map(meaning => {
           //console.log(meaning.definitions[0].synonyms); // line to check synonyms
@@ -70,8 +92,23 @@ const Home = () => {
 
 
   const playAudio = async () => {
-    alert('no audio yet');
+    try {
+      if (audio) {
+        await audio.unloadAsync();
+      }
+      if (audioURL) {
+        const { sound } = await Audio.Sound.createAsync({ uri: audioURL });
+        setAudio(sound);
+        await sound.playAsync();
+      }
+    } catch (error) {
+      console.error('Error playing audio: ', error);
+    }
   };
+  
+  
+  
+
 
   const BulletPoint = ({ style, ...props }) => (
     <View
