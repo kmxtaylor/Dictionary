@@ -14,8 +14,8 @@ import { useFont } from 'hooks/useFont';
 import FontMappings from 'constants/FontMappings';
 
 const Home = () => {
-  const [word, setWord] = useState('');
-  const [searchedWord, setSearchedWord] = useState(null);
+  const [typedWord, setTypedWord] = useState('');
+  const [foundWord, setFoundWord] = useState(null);
   const [definitions, setDefinitions] = useState([]);
   const [partOfSpeech, setPartOfSpeech] = useState('');
   const [synonyms, setSynonyms] = useState([]);
@@ -29,10 +29,10 @@ const Home = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+      const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${typedWord}`);
       const data = response.data[0];
   
-      setSearchedWord(data.word);
+      setFoundWord(data.word);
       setPhonetic(data.phonetic); // Set the phonetic of the word
 
       if (data.meanings && data.meanings.length > 0) {
@@ -44,16 +44,16 @@ const Home = () => {
               //console.log(definition.synonyms); // line to check synonyms
               return definition.definition;
             }),
-            examples: meaning.definitions.map(definition => definition.example || ''),
-            synonyms: meaning.synonyms || [], // Collect synonyms of all definitions
-            antonyms: meaning.antonyms || [] // Collect antonyms of all definitions
+            examples: meaning.definitions.map(definition => definition.example ?? ''),
+            synonyms: meaning.synonyms ?? [], // Collect synonyms of all definitions
+            antonyms: meaning.antonyms ?? [] // Collect antonyms of all definitions
           };
         });
         setDefinitions(wordDefinitions);
         setPartOfSpeech(data.meanings[0].partOfSpeech);
-        setSynonyms(data.meanings[0].synonyms || []);
-        setAntonyms(data.meanings[0].antonyms || []);
-        setExamples(data.meanings.map(meaning => meaning.definitions.map(definition => definition.example || '')));
+        setSynonyms(data.meanings[0].synonyms ?? []);
+        setAntonyms(data.meanings[0].antonyms ?? []);
+        setExamples(data.meanings.map(meaning => meaning.definitions.map(definition => definition.example ?? '')));
       } else {
         setDefinitions([]);
         setPartOfSpeech('');
@@ -88,31 +88,35 @@ const Home = () => {
   );
 
   const WordInfo = ({ ...props }) => {
-    let tempWord = { // temp
-      phonetic: '/fəˈnɛtɪk/',
-      phonetics: [{
-        otherStuff: '',
-        audio: 'https://api.dictionaryapi.dev/media/pronunciations/en/keyboard-us.mp3',
-      }],
-      meanings: [
-        {
-          partOfSpeech: 'noun',
-          definitions: [
-            {
-              definition: 'loreum ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-            },
-          ],
-          synonyms: ['synonym1', 'synonym2', 'synonym3'],
-        },
-      ],
-      sourceUrl: 'https://www.google.com',
-    };
+    // let tempWord = { // temp
+    //   phonetic: '/fəˈnɛtɪk/',
+    //   phonetics: [{
+    //     otherStuff: '',
+    //     audio: 'https://api.dictionaryapi.dev/media/pronunciations/en/keyboard-us.mp3',
+    //   }],
+    //   meanings: [
+    //     {
+    //       partOfSpeech: 'noun',
+    //       definitions: [
+    //         {
+    //           definition: 'loreum ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+    //         },
+    //       ],
+    //       synonyms: ['synonym1', 'synonym2', 'synonym3'],
+    //     },
+    //   ],
+    //   sourceUrl: 'https://www.google.com',
+    // };
     
+    if (!foundWord) {
+      return null;
+    }
+
     return (
       <View style={styles.wordInfoContainer}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 30 }}>
           <View>
-            <TextBold style={{ fontSize: 30 }}>{searchedWord ?? 'Example word'}</TextBold>
+            <TextBold style={{ fontSize: 30 }}>{foundWord}</TextBold>
           </View>
           <TouchableOpacity onPress={playAudio}>
             <IconPlay />
@@ -120,7 +124,7 @@ const Home = () => {
         </View>
 
         {/* Display the phonetic */}
-        {searchedWord && (
+        {phonetic && (
         <View style={{ marginTop: 10 }}>
           <Text style={{ fontSize: 20, color: colors.accent }}>{phonetic}</Text>
         </View>
@@ -215,14 +219,13 @@ const Home = () => {
             ]}
             placeholder="Search for a word..."
             placeholderTextColor={colors.text}
-            value={word}
-            onChangeText={text => setWord(text)}
+            value={typedWord}
+            onChangeText={text => setTypedWord(text)}
           />
           <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
             <IconSearch color={colors.accent} />
           </TouchableOpacity>
         </View>
-
         <WordInfo />
       </ScrollView>
     </Layout>
