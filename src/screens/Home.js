@@ -129,6 +129,10 @@ const Home = () => {
       console.error('Error playing audio: ', error);
     }
   };
+  
+  
+  
+
 
   const BulletPoint = ({ style, ...props }) => (
     <View
