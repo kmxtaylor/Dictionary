@@ -334,9 +334,10 @@ const Home = () => {
               { color: colors.text, fontFamily: FontMappings[font].bold },
               styles.searchInput
             ]}
-            placeholder="Search for a word..."
+            placeholder="Enter a word..."
             placeholderTextColor={colors.text}
             value={typedWord}
+            onSubmitEditing={handleSearch}
             onChangeText={text => setTypedWord(text)}
           />
           <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
