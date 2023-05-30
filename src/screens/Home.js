@@ -19,13 +19,13 @@ import { Audio, Permissions } from 'expo-av';
 const Home = () => {
   const [typedWord, setTypedWord] = useState('');
   const [foundWord, setFoundWord] = useState(null);
-  const [audio, setAudio] = useState(null); 
-  const [audioURL, setAudioURL] = useState(''); 
+  const [audio, setAudio] = useState(null);
+  const [audioURL, setAudioURL] = useState('');
   const [definitions, setDefinitions] = useState([]);
   const [partOfSpeech, setPartOfSpeech] = useState('');
   const [synonyms, setSynonyms] = useState([]);
-  const [antonyms, setAntonyms] = useState([]); 
-  const [examples, setExamples] = useState([]); 
+  const [antonyms, setAntonyms] = useState([]);
+  const [examples, setExamples] = useState([]);
   const [phonetic, setPhonetic] = useState('');
   const [sourceUrl, setSourceUrl] = useState('');
 
@@ -36,10 +36,10 @@ const Home = () => {
     try {
       const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${typedWord}`);
       const data = response.data[0];
-  
+
       setFoundWord(data.word);
       setPhonetic(data.phonetic); // Set the phonetic of the word
-     
+
       // Check if phonetics exist and contain audio URLs.
       if (data.phonetics && data.phonetics.length > 0) {
         const audioUrls = data.phonetics
@@ -76,6 +76,7 @@ const Home = () => {
         setSynonyms(data.meanings[0].synonyms ?? []);
         setAntonyms(data.meanings[0].antonyms ?? []);
         setExamples(data.meanings.map(meaning => meaning.definitions.map(definition => definition.example ?? '')));
+        console.log(wordDefinitions);
       } else {
         setDefinitions([]);
         setPartOfSpeech('');
@@ -83,13 +84,17 @@ const Home = () => {
         setAntonyms([]);
         setExamples([]);
       }
-  
+
       setSourceUrl(data.sourceUrls[0]);
     } catch (error) {
+      setDefinitions([]);
+      setPartOfSpeech('');
+      setSynonyms([]);
+      setAntonyms([]);
+      setExamples([]);
       console.error(error);
     }
   };
-
 
   const playAudio = async () => {
     try {
@@ -105,21 +110,17 @@ const Home = () => {
       console.error('Error playing audio: ', error);
     }
   };
-  
-  
-  
-
 
   const BulletPoint = ({ style, ...props }) => (
     <View
-      style={[{ height: 0, width: 1, borderWidth: 3, borderRadius: 5, borderColor: colors.accent }, style]}
+      style={[{ borderColor: colors.accent }, styles.bulletPoint, style]}
       {...props}
     />
   );
 
   const HorizontalLine = ({ style, ...props }) => (
     <View
-      style={[{ height: 0, borderWidth: 1, borderColor: colors.line }, style]}
+      style={[{borderColor: colors.line}, styles.horizontalLine, style]}
       {...props}
     />
   );
@@ -144,115 +145,143 @@ const Home = () => {
     //   ],
     //   sourceUrl: 'https://www.google.com',
     // };
-    
+
     if (!foundWord) {
       return null;
     }
 
     return (
       <View style={styles.wordInfoContainer}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 30 }}>
-          <View style={{ flexDirection: 'column' }}>
+        <View style={styles.topRow}>
+          <View>
             <View>
-              <TextBold style={{ fontSize: 30 }}>{foundWord}</TextBold>
+              <TextBold style={styles.foundWord}>{foundWord}</TextBold>
             </View>
             {/* Display the phonetic */}
             {phonetic && (
-            <View style={{ marginTop: 10 }}>
-              <Text style={{ fontSize: 20, color: colors.accent }}>{phonetic}</Text>
-            </View>
+              <Text
+                style={{ color: colors.accent, marginTop: 10, fontSize: 20 }}
+              >
+              {phonetic}
+            </Text>
             )}
           </View>
-          { audioURL && (
+          {audioURL && (
             <TouchableOpacity onPress={playAudio}>
               <IconPlay />
             </TouchableOpacity>
           )}
         </View>
 
-  
         {definitions.map((definition, index) => (
           <View key={index}>
-            <View style={{ flexDirection: 'row', marginTop: 40, alignItems: 'center', justifyContent: 'center' }}>
-              <TextBold style={{ fontStyle: 'italic', fontSize: 20, color: colors.text }}>{definition.partOfSpeech}</TextBold>
-              <HorizontalLine style={{ flex: 1, marginLeft: 20 }} />
+            <View style={[styles.center, styles.sectionRow]}>
+              <TextBold style={[{ color: colors.text }, styles.partOfSpeech]}>
+                {definition.partOfSpeech}
+              </TextBold>
+              <HorizontalLine style={{ marginLeft: 20 }} />
             </View>
-            <Text style={{ marginTop: 40, fontSize: 18, color: colors.subHeading }}>Meaning</Text>
-            
+            <Text
+              style={{ color: colors.subHeading, marginTop: 30, fontSize: 18 }}
+            >
+              Meaning
+            </Text>
+
             {definition.definitions.map((def, idx) => (
-              <View key={idx} style={{ flexDirection: 'row', marginTop: 20 }}>
-                <BulletPoint style={{ marginTop: 10 }} />
-                <Text style={{ marginLeft: 10, fontSize: 14, color: colors.text }}>{def}</Text>
+              <View key={idx} style={styles.defRow}>
+                <BulletPoint />
+                <Text style={{ color: colors.text, fontSize: 14 }}>{def}</Text>
               </View>
             ))}
 
             {definition.synonyms.length > 0 && (
-              <View style={{ flexDirection: 'row', marginTop: 40, }}>
-                <Text style={{ fontSize: 18, color: colors.subHeading }}>Synonyms</Text>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+              <View style={styles.sectionRow}>
+                <Text style={{ color: colors.subHeading, fontSize: 18 }}>
+                  Synonyms
+                </Text>
+                <View style={styles.wrappingList}>
                   {definition.synonyms.map((syn, idx) => (
-                    <Text key={idx} style={{ marginLeft: 10, marginRight: 5, fontSize: 18, color: colors.accent }}>{syn}</Text>
+                    <Text
+                      key={idx}
+                      style={{ color: colors.accent, marginLeft: 10, marginRight: 5, fontSize: 18 }}
+                    >
+                      {syn}
+                    </Text>
                   ))}
                 </View>
               </View>
             )}
 
             {definition.antonyms.length > 0 && (
-              <View style={{ flexDirection: 'row', marginTop: 40, }}>
-                <Text style={{ fontSize: 18, color: colors.subHeading }}>Antonyms</Text>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+              <View style={styles.sectionRow}>
+                <Text style={{ fontSize: 18, color: colors.subHeading }}>
+                  Antonyms
+                </Text>
+                <View style={styles.wrappingList}>
                   {definition.antonyms.map((ant, idx) => (
-                    <Text key={idx} style={{ marginLeft: 10, marginRight: 5, fontSize: 18, color: colors.accent }}>{ant}</Text>
+                    <Text
+                      key={idx}
+                      style={{ color: colors.accent, marginLeft: 10, marginRight: 5, fontSize: 18 }}
+                    >
+                      {ant}
+                    </Text>
                   ))}
                 </View>
               </View>
             )}
 
-         {/* Render the Examples title only if examples are provided */}
-         {definition.examples.length > 0 && (
-            <View style={{ flexDirection: 'column', marginTop: 40 }}>
-              <Text style={{ fontSize: 18, color: colors.subHeading }}>Example(s)</Text>
-              <View style={{ marginTop: 10 }}>
-                {definition.examples.map((example, idx) => {
-                  if (example) {
-                    return (
-                      <View key={idx} style={{ flexDirection: 'row', marginBottom: 10 }}>
-                        <BulletPoint style={{ marginTop: 8 }} />
+            {/* Render the Examples title only if examples are provided */}
+            {definition.examples.length > 0 && (
+              <View style={{ flexDirection: 'column', marginTop: 40 }}>
+                <Text style={{ fontSize: 18, color: colors.subHeading }}>Example(s)</Text>
+                <View style={{ marginTop: 10 }}>
+                  {definition.examples.map((example, idx) => {
+                    if (example) {
+                      return (
                         <Text
-                          style={{ marginLeft: 10, flexWrap: 'wrap', flex: 1, fontSize: 14, color: colors.text }}
+                          style={{ color: colors.subHeading, fontSize: 14 }}
+                          key={{idx}}
                         >
                           "{example}"
                         </Text>
-                      </View>
-                    );
-                  }
-                  return null;
-                })}
+                      );
+                    }
+                    return null;
+                  })}
+                </View>
               </View>
-            </View>
-          )}
+            )}
           </View>
         ))}
-  
-        <View>
+
+        <View style={{marginBottom: 50}}>
           <HorizontalLine style={{ marginTop: 40 }} />
-          <Text style={{ marginTop: 40, textDecorationLine: 'underline', fontSize: 18, color: colors.subHeading }}>Source</Text>
-          <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 50, alignItems: 'center' }}>
-            <TouchableOpacity style={{ flexDirection: 'row'}} onPress={() => Linking.openURL(sourceUrl)}>
-              <Text style={{ textDecorationLine: 'underline', fontSize: 14, color: colors.text }}>{sourceUrl}</Text>
-              <IconNewWindow style={{ marginTop: 5, marginLeft: 10 }} />
-            </TouchableOpacity>
-          </View>
+          <Text
+            style={[{ color: colors.subHeading }, styles.sourcesHeader]}
+          >
+            Source(s)
+          </Text>
+          <TouchableOpacity
+            style={styles.sourceLink}
+            onPress={() => Linking.openURL(sourceUrl)}
+          >
+            <Text style={[{ color: colors.text }, styles.sourceLinkText]}>
+              {sourceUrl}
+            </Text>
+            <IconNewWindow style={styles.iconNewWindow} />
+          </TouchableOpacity>
         </View>
       </View>
     );
   };
-  
-  
+
+
   return (
     <Layout>
       <ScrollView style={{ padding: 20 }} keyboardShouldPersistTaps='handled' testID='home-screen'>
-        <View style={[{ backgroundColor: colors.backgroundSecondary }, styles.searchBar]}>
+        <View
+          style={[{ backgroundColor: colors.backgroundSecondary }, styles.searchBar]}
+        >
           <TextInput
             style={[
               { color: colors.text, fontFamily: FontMappings[font].bold },
@@ -295,8 +324,76 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
+
+  bulletPoint: {
+    height: 0,
+    width: 1,
+    marginTop: 10,
+    marginRight: 10,
+    borderWidth: 3,
+    borderRadius: 5,
+  },
+  horizontalLine: {
+    flex: 1,
+    height: 0,
+    borderWidth: 1,
+  },
+
   wordInfoContainer: {
     flex: 1,
+  },
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 30
+  },
+  foundWord: {
+    fontSize: 30 
+  },
+  phoneticRow: {
+    marginTop: 10,
+  },
+  
+  sectionRow: {
+    flexDirection: 'row',
+    marginTop: 30,
+  },
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  partOfSpeech: {
+    fontStyle: 'italic',
+    fontSize: 20,
+  },
+  defRow: {
+    flexDirection: 'row',
+    marginTop: 20,
+    marginRight: 10,
+  },
+  wrappingList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+
+  sourcesHeader: {
+    marginTop: 30,
+    textDecorationLine: 'underline',
+    fontSize: 18.
+  },
+  sourceLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  sourceLinkText: {
+    textDecorationLine: 'underline',
+    fontSize: 14,
+  },
+  iconNewWindow: {
+    marginTop: 5,
+    marginLeft: 10,
   },
 });
 
