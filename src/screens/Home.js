@@ -185,7 +185,7 @@ const Home = () => {
             ))}
 
             {definition.synonyms.length > 0 && (
-              <View style={{ flexDirection: 'column', marginTop: 40, }}>
+              <View style={{ flexDirection: 'row', marginTop: 40, }}>
                 <Text style={{ fontSize: 18, color: colors.subHeading }}>Synonyms</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                   {definition.synonyms.map((syn, idx) => (
@@ -196,7 +196,7 @@ const Home = () => {
             )}
 
             {definition.antonyms.length > 0 && (
-              <View style={{ flexDirection: 'column', marginTop: 40, }}>
+              <View style={{ flexDirection: 'row', marginTop: 40, }}>
                 <Text style={{ fontSize: 18, color: colors.subHeading }}>Antonyms</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                   {definition.antonyms.map((ant, idx) => (
