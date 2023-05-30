@@ -77,18 +77,18 @@ const Home = () => {
 
       const wordDefinitions = data.meanings.map(meaning => {
         return {
-          partOfSpeech: meaning?.partOfSpeech,
+          partOfSpeech: meaning?.partOfSpeech ?? '',
           definitions: meaning?.definitions.map(def => {
             //console.log(definition.synonyms); // line to check synonyms
-            return def.definition;
+            return def.definition ?? null;
           }),
-          examples: meaning?.definitions.map(def => def.example ?? ''),
+          examples: meaning?.definitions.map(def => def.example ?? null),
           synonyms: meaning?.synonyms ?? [],
           antonyms: meaning?.antonyms ?? [],
         };
       });
       setDefinitions(wordDefinitions);
-      console.log(wordDefinitions);
+      // console.log(JSON.stringify(wordDefinitions, null, 2));
 
       // these don't seem necessary(?) & should be handled by definition:
       // setPartOfSpeech(data.meanings[0].partOfSpeech);
@@ -207,9 +207,22 @@ const Home = () => {
             </Text>
 
             {definition?.definitions.map((def, idx) => (
-              <View key={idx} style={styles.defRow}>
+              <View key={idx} style={styles.meaningRow}>
                 <BulletPoint />
-                <Text style={{ color: colors.text, fontSize: 14 }}>{def}</Text>
+                <View style={styles.meaningCol}>
+                  <Text style={{ color: colors.text, fontSize: 14 }}>{def}</Text>
+
+                  {definition?.examples?.map((example, i) => (
+                    example && (
+                      <Text
+                        key={{i}}
+                        style={[{ color: colors.subHeading, fontSize: 14 }, styles.meaningRow]}
+                      >
+                        "{example}"
+                      </Text>
+                    )
+                  ))}
+                </View>
               </View>
             ))}
 
@@ -250,7 +263,7 @@ const Home = () => {
             )}
 
             {/* Render the Examples title only if examples are provided */}
-            {definition?.examples.length > 0 && (
+            {/* {definition?.examples.length > 0 && (
               <View style={{ flexDirection: 'column', marginTop: 40 }}>
                 <Text style={{ fontSize: 18, color: colors.subHeading }}>Example(s)</Text>
                 <View style={{ marginTop: 10 }}>
@@ -269,7 +282,7 @@ const Home = () => {
                   })}
                 </View>
               </View>
-            )}
+            )} */}
           </View>
         ))}
 
@@ -389,14 +402,17 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     fontSize: 20,
   },
-  defRow: {
+  meaningRow: { // includes bullet point
     flexDirection: 'row',
     marginTop: 20,
-    marginRight: 10,
+  },
+  meaningCol: { // excludes bullet point
+    flex: 1, // important so text doesn't get pushed off screen
   },
   wrappingList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    flex: 1, // important so text doesn't get pushed off screen
   },
 
   sourcesHeader: {
