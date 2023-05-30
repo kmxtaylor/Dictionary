@@ -37,7 +37,7 @@ const FontSettings = () => {
 
   return (
     <Layout>
-      <View style={{ padding: 20 }}>
+      <View style={{ padding: 20 }} testID='font-settings-screen'>
         {/* <Text style={styles.text}>Font Settings</Text>
         <TextBold style={styles.text}>bold test</TextBold>
         <TextBold style={[styles.text, styles.italic]}>bold italic test</TextBold> */}

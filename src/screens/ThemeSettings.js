@@ -36,7 +36,7 @@ const ThemeSettings = () => {
 
   return (
     <Layout>
-      <View style={{ padding: 20 }}>
+      <View style={{ padding: 20 }} testID='theme-settings-screen'>
         {/* <Text style={styles.text}>Theme Settings</Text> */}
         {Themes.map((key, index) => (
           <Fragment key={key}>

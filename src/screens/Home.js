@@ -109,7 +109,7 @@ const Home = () => {
     };
     
     return (
-      <View style={styles.wordInfoContainer}>
+      <View style={styles.wordInfoContainer} testID='home-screen'>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 30 }}>
           <View>
             <TextBold style={{ fontSize: 30 }}>{searchedWord ?? 'Example word'}</TextBold>
