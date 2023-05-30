@@ -75,20 +75,23 @@ const Home = () => {
         setAudioURL(''); // No phonetics available for the Audio component
       }
 
-      const wordDefinitions = data.meanings.map(meaning => {
+      const wordDefinitions = data.meanings.map((meaning, index) => {
+        console.log(meaning?.definitions);
         return {
+          // key: index, // partially fixes duplicate key warning
           partOfSpeech: meaning?.partOfSpeech ?? '',
-          definitions: meaning?.definitions.map(def => {
-            //console.log(definition.synonyms); // line to check synonyms
-            return def.definition ?? null;
-          }),
-          examples: meaning?.definitions.map(def => def.example ?? null),
+          definitions: meaning?.definitions.map(
+            (def, idx) => def.definition ?? null
+          ),
+          examples: meaning?.definitions.map(
+            (def, idx) => def.example ?? null
+          ),
           synonyms: meaning?.synonyms ?? [],
           antonyms: meaning?.antonyms ?? [],
         };
       });
       setDefinitions(wordDefinitions);
-      // console.log(JSON.stringify(wordDefinitions, null, 2));
+      console.log(JSON.stringify(wordDefinitions, null, 2));
 
       // these don't seem necessary(?) & should be handled by definition:
       // setPartOfSpeech(data.meanings[0].partOfSpeech);
