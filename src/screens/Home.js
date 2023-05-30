@@ -22,12 +22,12 @@ const Home = () => {
   const [audio, setAudio] = useState(null);
   const [audioURL, setAudioURL] = useState('');
   const [phonetic, setPhonetic] = useState(null);
-  const [definitions, setDefinitions] = useState([]);
+  const [definitions, setDefinitions] = useState(null);
   // const [partOfSpeech, setPartOfSpeech] = useState('');
   // const [synonyms, setSynonyms] = useState([]);
   // const [antonyms, setAntonyms] = useState([]);
   // const [examples, setExamples] = useState([]);
-  const [sourceUrl, setSourceUrl] = useState('');
+  const [sourceUrls, setSourceUrls] = useState('');
   const [errorMsg, setErrorMsg] = useState(null);
 
   const { colors } = useTheme();
@@ -38,12 +38,12 @@ const Home = () => {
     setAudio(null);
     setAudioURL('');
     setPhonetic('');
-    setDefinitions([]);
+    setDefinitions(null);
     // setPartOfSpeech('');
     // setSynonyms([]);
     // setAntonyms([]);
     // setExamples([]); //
-    setSourceUrl('');
+    setSourceUrls(null);
 
     // don't reset errorMsg here, in case error is not resolved
   };
@@ -96,7 +96,7 @@ const Home = () => {
       // setAntonyms(data.meanings[0].antonyms ?? []);
       // setExamples(data.meanings.map(meaning => meaning.definitions.map(definition => definition.example ?? '')));
 
-      setSourceUrl(data.sourceUrls[0]); // want to change this to an arr
+      setSourceUrls(data?.sourceUrls ?? []);
       setErrorMsg(null);
     } catch (error) {
       // resetWordStates(); // actually, just don't change state until word found
@@ -192,7 +192,7 @@ const Home = () => {
           )}
         </View>
 
-        {definitions.map((definition, index) => (
+        {definitions?.map((definition, index) => (
           <View key={index}>
             <View style={[styles.center, styles.sectionRow]}>
               <TextBold style={[{ color: colors.text }, styles.partOfSpeech]}>
@@ -206,14 +206,14 @@ const Home = () => {
               Meaning
             </Text>
 
-            {definition.definitions.map((def, idx) => (
+            {definition?.definitions.map((def, idx) => (
               <View key={idx} style={styles.defRow}>
                 <BulletPoint />
                 <Text style={{ color: colors.text, fontSize: 14 }}>{def}</Text>
               </View>
             ))}
 
-            {definition.synonyms.length > 0 && (
+            {definition?.synonyms.length > 0 && (
               <View style={styles.sectionRow}>
                 <Text style={{ color: colors.subHeading, fontSize: 18 }}>
                   Synonyms
@@ -231,7 +231,7 @@ const Home = () => {
               </View>
             )}
 
-            {definition.antonyms.length > 0 && (
+            {definition?.antonyms.length > 0 && (
               <View style={styles.sectionRow}>
                 <Text style={{ fontSize: 18, color: colors.subHeading }}>
                   Antonyms
@@ -250,7 +250,7 @@ const Home = () => {
             )}
 
             {/* Render the Examples title only if examples are provided */}
-            {definition.examples.length > 0 && (
+            {definition?.examples.length > 0 && (
               <View style={{ flexDirection: 'column', marginTop: 40 }}>
                 <Text style={{ fontSize: 18, color: colors.subHeading }}>Example(s)</Text>
                 <View style={{ marginTop: 10 }}>
@@ -280,15 +280,18 @@ const Home = () => {
           >
             Source(s)
           </Text>
-          <TouchableOpacity
-            style={styles.sourceLink}
-            onPress={() => Linking.openURL(sourceUrl)}
-          >
-            <Text style={[{ color: colors.text }, styles.sourceLinkText]}>
-              {sourceUrl}
-            </Text>
-            <IconNewWindow style={styles.iconNewWindow} />
-          </TouchableOpacity>
+          {sourceUrls?.map((url, idx) => (
+            <TouchableOpacity
+              key={idx}
+              style={styles.sourceLink}
+              onPress={() => Linking.openURL(url)}
+            >
+              <Text style={[{ color: colors.text }, styles.sourceLinkText]}>
+                {url}
+              </Text>
+              <IconNewWindow style={styles.iconNewWindow} />
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
     );
