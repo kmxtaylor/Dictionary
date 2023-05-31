@@ -286,6 +286,7 @@ const Home = () => {
       <ScrollView style={{ padding: 20 }} keyboardShouldPersistTaps='handled' testID='home-screen'>
         <View
           style={[{ backgroundColor: colors.backgroundSecondary }, styles.searchBar]}
+          testID='current-background-color'
         >
           <TextInput
             style={[

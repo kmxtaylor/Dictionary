@@ -17,9 +17,22 @@ describe('theme settings screen test suite', () => {
       expect(themeSettingsScreen).toBeDefined();
     }, TIMEOUT);
   });
-  /*
-  test('dummy test', async () => {
+
+  // test if the app / theme settings screen have the right background color
+  test('should have the right background color', async () => {
+    const { getByTestId } = render(<ThemeSettings />)
+    const themeColor = getByTestId('current-background-color');
+    let style ={};
+    await waitFor(() => {
+      if (Array.isArray(themeColor.props.style)) {
+        style = themeColor.props.style.reduce((acc, cur) => {
+          return {...acc, ...cur};
+        }, {});
+      } else {
+        style = themeColor.props.style;
+      }
+      expect(style.backgroundColor).toEqual('#050505');
+    }, TIMEOUT);
   });
-  */
   
 });
