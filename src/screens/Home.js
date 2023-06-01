@@ -17,6 +17,7 @@ import FontMappings from 'constants/FontMappings';
 import { Audio } from 'expo-av';
 
 const Home = () => {
+  // Use state to store the API data, the typed word from the user and the error message.
   const [typedWord, setTypedWord] = useState('');
   const [foundWord, setFoundWord] = useState(null);
   const [audio, setAudio] = useState(null);
@@ -40,8 +41,6 @@ const Home = () => {
     setPhonetic('');
     setMeanings(null);
     setSourceUrls(null);
-
-    // don't reset errorMsg here, in case error is not resolved
   };
 
   const handleSearch = async () => {
@@ -65,7 +64,6 @@ const Home = () => {
           const [ audioUrl ] = data.phonetics
             .filter(phonetic => phonetic.audio) // filter out phonetics without audio URLs
             .map(phonetic => phonetic.audio); // extract audio URLs
-
           setAudioURL(audioUrl ?? '');
         } else {
           setAudioURL('');
@@ -96,9 +94,8 @@ const Home = () => {
         setErrorMsg(null);
       }
     } catch (error) {
-      // resetWordStates(); // actually, just don't change state until word found
-      console.log('Error!:', error?.data?.title || error); // doesn't show to user
-      console.log('Error (detailed):', JSON.stringify(error.response, null, 2)); // doesn't show to user
+      // console.log('Error!:', error?.data?.title || error); // doesn't show to user
+      // console.log('Error (detailed):', JSON.stringify(error.response, null, 2)); // doesn't show to user
       if (error?.response?.status === 404) {
         let err = `Word not found. Try a different word.`
         setErrorMsg(err);
@@ -196,7 +193,7 @@ const Home = () => {
               <HorizontalLine style={{ marginLeft: 20 }} />
             </View>
             <Text
-              style={{ color: colors.subHeading, marginTop: 30, fontSize: 16 }}
+              style={{ color: colors.subHeading, marginTop: 30, fontSize: 16 }}   testID={`meaningSection-${index}`}
             >
               Meaning
             </Text>
@@ -308,7 +305,7 @@ const Home = () => {
             onBlur={() => setTextInputActive(false)}
             // ref={textInputRef}
           />
-          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+          <TouchableOpacity style={styles.searchButton} onPress={handleSearch} testID='search-button'>
             <IconSearch color={colors.accent} />
           </TouchableOpacity>
         </View>
