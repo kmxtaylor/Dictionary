@@ -22,7 +22,7 @@ const Home = () => {
   const [audio, setAudio] = useState(null);
   const [audioURL, setAudioURL] = useState('');
   const [phonetic, setPhonetic] = useState(null);
-  const [definitions, setDefinitions] = useState(null);
+  const [meanings, setMeanings] = useState(null);
   // const [partOfSpeech, setPartOfSpeech] = useState('');
   // const [synonyms, setSynonyms] = useState([]);
   // const [antonyms, setAntonyms] = useState([]);
@@ -42,7 +42,7 @@ const Home = () => {
     setAudio(null);
     setAudioURL('');
     setPhonetic('');
-    setDefinitions(null);
+    setMeanings(null);
     // setPartOfSpeech('');
     // setSynonyms([]);
     // setAntonyms([]);
@@ -83,23 +83,28 @@ const Home = () => {
 
         LogBox.ignoreLogs(['Warning: Encountered two children with the same key, `[object Object]`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.']);
 
-        const wordDefinitions = data.meanings.map((meaning, index) => {
-          // console.log(meaning?.definitions);
-          return {
-            key: index, // partially fixes duplicate key warning
-            partOfSpeech: meaning?.partOfSpeech ?? '',
-            definitions: meaning?.definitions.map((def, idx) => (
-              def.definition ?? null
-            )),
-            examples: meaning?.definitions.map((def, idx) => (
-              def.example ?? null
-            )),
-            synonyms: meaning?.synonyms ?? [],
-            antonyms: meaning?.antonyms ?? [],
-          };
-        });
-        setDefinitions(wordDefinitions);
-        // console.log(JSON.stringify(wordDefinitions, null, 2));
+        // const wordData = data.meanings.map((meaning, index) => {
+        //   // console.log(meaning?.definitions);
+        //   return {
+        //     key: index, // partially fixes duplicate key warning
+        //     partOfSpeech: meaning?.partOfSpeech ?? '',
+        //     definitions: meaning?.definitions ?? [],
+        //     // definitions: meaning?.definitions.map((def, idx) => (
+        //     //   def.definition ?? null
+        //     // )),
+        //     // examples: meaning?.definitions.map((def, idx) => (
+        //     //   def.example ?? null
+        //     // )),
+        //     synonyms: meaning?.synonyms ?? [],
+        //     antonyms: meaning?.antonyms ?? [],
+        //   };
+        // });
+        const wordData = data.meanings;
+        // console.log('wordData:', wordData);
+        // console.log('wordData[0].definitions:', wordData[0].definitions);
+        // console.log(JSON.stringify(wordData, null, 2));
+        // console.log('wordData[0].definitions:', JSON.stringify(wordData[0].definitions, null, 2));
+        setMeanings(wordData);
 
 
         // these don't seem necessary(?) & should be handled by definition:
@@ -204,11 +209,12 @@ const Home = () => {
           )}
         </View>
 
-        {definitions?.map((definition, index) => (
+        {/* Word Meanings by Part of Speech */}
+        {meanings?.map((meaningSection, index) => (
           <View key={index}>
             <View style={[styles.center, styles.sectionRow]}>
               <TextBold style={[{ color: colors.text }, styles.partOfSpeech]}>
-                {definition.partOfSpeech}
+                {meaningSection.partOfSpeech}
               </TextBold>
               <HorizontalLine style={{ marginLeft: 20 }} />
             </View>
@@ -218,33 +224,30 @@ const Home = () => {
               Meaning
             </Text>
 
-            {definition?.definitions.map((def, idx) => (
+            {meaningSection?.definitions.map((defObj, idx) => (
               <View key={idx} style={styles.meaningRow}>
                 <BulletPoint />
                 <View style={styles.meaningCol}>
-                  <Text style={{ color: colors.text, fontSize: 14 }}>{def}</Text>
+                  <Text style={{ color: colors.text, fontSize: 14 }}>{defObj.definition}</Text>
 
-                  {definition?.examples?.map((example, i) => (
-                    example && (i === idx) && (
-                      <Text
-                        key={example.slice(0,5)}
-                        style={[{ color: colors.subHeading, fontSize: 14 }, styles.exampleRow]}
-                      >
-                        "{example}"
-                      </Text>
-                    )
-                  ))}
+                  {defObj?.example && (
+                    <Text
+                      style={[{ color: colors.subHeading, fontSize: 14 }, styles.exampleRow]}
+                    >
+                      "{defObj.example}"
+                    </Text>
+                  )}
                 </View>
               </View>
             ))}
 
-            {definition?.synonyms.length > 0 && (
+            {meaningSection?.synonyms.length > 0 && (
               <View style={styles.sectionRow}>
                 <Text style={{ color: colors.subHeading, fontSize: 16 }}>
                   Synonyms
                 </Text>
                 <View style={styles.wrappingList}>
-                  {definition.synonyms.map((syn, idx) => (
+                  {meaningSection.synonyms.map((syn, idx) => (
                     <TextBold
                       key={idx}
                       style={{ color: colors.accent, marginLeft: 10, marginRight: 5, fontSize: 14 }}
@@ -256,13 +259,13 @@ const Home = () => {
               </View>
             )}
 
-            {definition?.antonyms.length > 0 && (
+            {meaningSection?.antonyms.length > 0 && (
               <View style={styles.sectionRow}>
                 <Text style={{ fontSize: 16, color: colors.subHeading }}>
                   Antonyms
                 </Text>
                 <View style={styles.wrappingList}>
-                  {definition.antonyms.map((ant, idx) => (
+                  {meaningSection.antonyms.map((ant, idx) => (
                     <TextBold
                       key={idx}
                       style={{ color: colors.accent, marginLeft: 10, marginRight: 5, fontSize: 14 }}
@@ -276,6 +279,7 @@ const Home = () => {
           </View>
         ))}
 
+        {/* Sources */}
         <View style={{marginBottom: 50}}>
           <HorizontalLine style={{ marginTop: 40 }} />
           <Text
