@@ -5,7 +5,7 @@ import RootNavigation from 'navigation/RootNavigation';
 
 const App = () => {
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider testID='app'>
       <ThemeProvider>
         <FontProvider>
           <RootNavigation />
