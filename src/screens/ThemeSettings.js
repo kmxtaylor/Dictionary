@@ -8,7 +8,7 @@ import { useTheme } from 'hooks/useTheme';
 
 const Border = () => {
   const { colors } = useTheme();
-  return <View style={[styles.border, { backgroundColor: colors.text }]} testID='current-background-color'/>;
+  return <View style={[styles.border, { backgroundColor: colors.text }]}/>;
 };
 
 const ThemeRow = ({ children, checked, onPress }) => {

@@ -3,6 +3,9 @@ import { render, waitFor, fireEvent } from '@testing-library/react-native';
 import ThemeSettings from 'screens/ThemeSettings';
 import Colors from 'constants/Colors';
 
+import { ThemeProvider } from 'contexts/Theme';
+import { useTheme } from 'hooks/useTheme';
+
 jest.setTimeout(10000);
 const TIMEOUT = { timeout: 10000 };
 
@@ -18,21 +21,58 @@ describe('theme settings screen test suite', () => {
     }, TIMEOUT);
   });
 
-  // test if the app / theme settings screen have the right background color
+  // test changing theme (background color) from dark to light (if the screen starts w/ the dark background color & can be changed to color light background color)
   test('should have the right background color', async () => {
-    const { getByTestId } = render(<ThemeSettings />)
-    const themeColor = getByTestId('current-background-color');
-    let style ={};
+    // const { theme, colors } = useTheme();
+
+    const { getByTestId, getByText } = render(
+      <ThemeProvider>
+        <ThemeSettings />
+      </ThemeProvider>
+    );
+
     await waitFor(() => {
-      if (Array.isArray(themeColor.props.style)) {
-        style = themeColor.props.style.reduce((acc, cur) => {
+      const themeSettingsScreen = getByTestId('theme-settings-screen');
+      // console.log(themeSettingsScreen.props.style);
+      let style ={};
+
+      // flatten style array to single obj
+      if (Array.isArray(themeSettingsScreen.props.style)) {
+        style = themeSettingsScreen.props.style.reduce((acc, cur) => {
           return {...acc, ...cur};
         }, {});
       } else {
-        style = themeColor.props.style;
+        style = themeSettingsScreen.props.style;
       }
-      expect(style.backgroundColor).toEqual('#050505');
+      // console.log('initial background (#050505)', style.backgroundColor);
+      // console.log(`Colors['dark']`, Colors['dark']);
+      expect(style.backgroundColor).toEqual(Colors['dark'].background);
     }, TIMEOUT);
-  });
+
+    // press button w/ text 'light'
+    // await waitFor(() => {
+    //   const lightThemeButton = getByText('light');
+    //   // console.log(lightThemeButton);
+    //   fireEvent.press(lightThemeButton);
+    // }, TIMEOUT);
+
+    // await waitFor(() => {
+    //   const themeSettingsScreen = getByTestId('theme-settings-screen');
+    //   let style ={};
   
+    // flatten style array to single obj
+    //   if (Array.isArray(themeSettingsScreen.props.style)) {
+    //     style = themeSettingsScreen.props.style.reduce((acc, cur) => {
+    //       return {...acc, ...cur};
+    //     }, {});
+    //   } else {
+    //     style = themeSettingsScreen.props.style;
+    //   }
+    //   // console.log('changed background (NOT #050505)', style.backgroundColor);
+    //   // expect(style.backgroundColor).toEqual(Colors['light'].backgroundColor);
+    //   expect(style.backgroundColor).not.toEqual(Colors['dark'].backgroundColor);
+    // }, TIMEOUT);
+
+  });
+
 });
