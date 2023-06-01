@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { TextInput, StyleSheet, TouchableOpacity, Linking, LogBox } from 'react-native';
+import { useEffect, useState, useRef } from 'react';
+import { TextInput, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import axios from 'axios';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -14,8 +14,7 @@ import { useTheme } from 'hooks/useTheme';
 import { useFont } from 'hooks/useFont';
 import FontMappings from 'constants/FontMappings';
 
-import { Audio, Permissions } from 'expo-av';
-//import { set } from 'react-native-reanimated';
+import { Audio } from 'expo-av';
 
 const Home = () => {
   const [typedWord, setTypedWord] = useState('');
@@ -23,16 +22,14 @@ const Home = () => {
   const [audio, setAudio] = useState(null);
   const [audioURL, setAudioURL] = useState('');
   const [phonetic, setPhonetic] = useState(null);
-  const [definitions, setDefinitions] = useState(null);
-  // const [partOfSpeech, setPartOfSpeech] = useState('');
-  // const [synonyms, setSynonyms] = useState([]);
-  // const [antonyms, setAntonyms] = useState([]);
-  // const [examples, setExamples] = useState([]);
+  const [meanings, setMeanings] = useState(null);
   const [sourceUrls, setSourceUrls] = useState('');
   const [errorMsg, setErrorMsg] = useState(null);
-
-  const { colors } = useTheme();
+  
   const { font } = useFont();
+  const { colors } = useTheme();
+
+  const [textInputBorder, setTextInputBorder] = useState({borderColor: colors.backgroundSecondary});
 
   const isMountedRef = useIsMountedRef();
 
@@ -41,11 +38,7 @@ const Home = () => {
     setAudio(null);
     setAudioURL('');
     setPhonetic('');
-    setDefinitions(null);
-    // setPartOfSpeech('');
-    // setSynonyms([]);
-    // setAntonyms([]);
-    // setExamples([]); //
+    setMeanings(null);
     setSourceUrls(null);
 
     // don't reset errorMsg here, in case error is not resolved
@@ -56,7 +49,6 @@ const Home = () => {
       if (typedWord === '') {
         let err = `Search can't be blank.`
         setErrorMsg(err);
-        alert(err); // delete this when you code an official display of the msg
         return;
       }
 
@@ -71,41 +63,34 @@ const Home = () => {
         // Check if phonetics exist and contain audio URLs.
         if (data?.phonetics.length > 0) { // don't error out if no phonetics
           const [ audioUrl ] = data.phonetics
-            .filter(phonetic => phonetic.audio) // Filter out phonetics without audio URLs
-            .map(phonetic => phonetic.audio); // Extract audio URLs
+            .filter(phonetic => phonetic.audio) // filter out phonetics without audio URLs
+            .map(phonetic => phonetic.audio); // extract audio URLs
 
           setAudioURL(audioUrl ?? '');
         } else {
-          setAudioURL(''); // No phonetics available for the Audio component
+          setAudioURL('');
         }
 
-
-        LogBox.ignoreLogs(['Warning: Encountered two children with the same key, `[object Object]`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.']);
-
-        const wordDefinitions = data.meanings.map((meaning, index) => {
-          // console.log(meaning?.definitions);
+        /* explicitly re-set structure here for maintainable data management 
+           (much easier to troubleshoot if the API changes)
+        */
+        const wordData = data.meanings.map((meaning, index) => {
           return {
             key: index, // partially fixes duplicate key warning
             partOfSpeech: meaning?.partOfSpeech ?? '',
-            definitions: meaning?.definitions.map((def, idx) => (
-              def.definition ?? null
-            )),
-            examples: meaning?.definitions.map((def, idx) => (
-              def.example ?? null
-            )),
+            definitions: meaning?.definitions.map((defObj, idx) => {
+              return {
+                definition: defObj.definition,
+                example: defObj.example ?? null,
+                synonyms: defObj.synonyms ?? [], // currently unused
+                antonyms: defObj.antonyms ?? [], // currently unused
+              }
+            }),
             synonyms: meaning?.synonyms ?? [],
             antonyms: meaning?.antonyms ?? [],
           };
         });
-        setDefinitions(wordDefinitions);
-        // console.log(JSON.stringify(wordDefinitions, null, 2));
-
-
-        // these don't seem necessary(?) & should be handled by definition:
-        // setPartOfSpeech(data.meanings[0].partOfSpeech);
-        // setSynonyms(data.meanings[0].synonyms ?? []);
-        // setAntonyms(data.meanings[0].antonyms ?? []);
-        // setExamples(data.meanings.map(meaning => meaning.definitions.map(definition => definition.example ?? '')));
+        setMeanings(wordData);
 
         setSourceUrls(data?.sourceUrls ?? []);
         setErrorMsg(null);
@@ -115,16 +100,34 @@ const Home = () => {
       console.log('Error!:', error?.data?.title || error); // doesn't show to user
       console.log('Error (detailed):', JSON.stringify(error.response, null, 2)); // doesn't show to user
       if (error?.response?.status === 404) {
-        let err = `Word not found. Try again.`
+        let err = `Word not found. Try a different word.`
         setErrorMsg(err);
-        alert(err); // delete this when you code an official display of the msg
       }
       else {
         let err = `Can't parse word data. Try again.`
         setErrorMsg(err);
-        alert(err); // delete this when you code an official display of the msg
       }
     }
+  };
+
+  // const textInputRef = useRef(null);
+
+  // errorMsg changes after onFocus/onBlur triggered, catch changes in errorMsg
+  useEffect(() => {
+    setTextInputActive(errorMsg);
+  }, [errorMsg]);
+
+  const setTextInputActive = (isActive) => {
+    const inactiveColor = errorMsg ? colors.error : colors.backgroundSecondary;
+    const activeColor = colors.accent;
+
+    const borderColor = isActive ? activeColor : inactiveColor;
+    // const borderColor = textInputRef.current?.isFocused ? activeColor : inactiveColor;
+
+
+    console.log('isActive:', isActive, 'borderColor:', borderColor);
+    // console.log('textInputRef.current?.isFocused: ', textInputRef.current?.isFocused, 'borderColor:', borderColor);
+    setTextInputBorder({ borderColor: borderColor, });
   };
 
   const playAudio = async () => {
@@ -163,12 +166,11 @@ const Home = () => {
 
     return (
       <View style={styles.wordInfoContainer}>
-        <View style={styles.topRow}>
+        <View style={[styles.topRow, {marginTop: 10}]}>
           <View>
             <View>
               <TextBold style={styles.foundWord}>{foundWord}</TextBold>
             </View>
-            {/* Display the phonetic */}
             {phonetic && (
               <Text
                 style={{ color: colors.accent, marginTop: 10, fontSize: 20 }}
@@ -184,11 +186,12 @@ const Home = () => {
           )}
         </View>
 
-        {definitions?.map((definition, index) => (
+        {/* Word Meanings by Part of Speech */}
+        {meanings?.map((meaningSection, index) => (
           <View key={index}>
             <View style={[styles.center, styles.sectionRow]}>
               <TextBold style={[{ color: colors.text }, styles.partOfSpeech]}>
-                {definition.partOfSpeech}
+                {meaningSection.partOfSpeech}
               </TextBold>
               <HorizontalLine style={{ marginLeft: 20 }} />
             </View>
@@ -198,33 +201,30 @@ const Home = () => {
               Meaning
             </Text>
 
-            {definition?.definitions.map((def, idx) => (
+            {meaningSection?.definitions.map((defObj, idx) => (
               <View key={idx} style={styles.meaningRow}>
                 <BulletPoint />
                 <View style={styles.meaningCol}>
-                  <Text style={{ color: colors.text, fontSize: 14 }}>{def}</Text>
+                  <Text style={{ color: colors.text, fontSize: 14 }}>{defObj.definition}</Text>
 
-                  {definition?.examples?.map((example, i) => (
-                    example && (
-                      <Text
-                        key={{i}}
-                        style={[{ color: colors.subHeading, fontSize: 14 }, styles.exampleRow]}
-                      >
-                        "{example}"
-                      </Text>
-                    )
-                  ))}
+                  {defObj?.example && (
+                    <Text
+                      style={[{ color: colors.subHeading, fontSize: 14 }, styles.exampleRow]}
+                    >
+                      "{defObj.example}"
+                    </Text>
+                  )}
                 </View>
               </View>
             ))}
 
-            {definition?.synonyms.length > 0 && (
+            {meaningSection?.synonyms.length > 0 && (
               <View style={styles.sectionRow}>
                 <Text style={{ color: colors.subHeading, fontSize: 16 }}>
                   Synonyms
                 </Text>
                 <View style={styles.wrappingList}>
-                  {definition.synonyms.map((syn, idx) => (
+                  {meaningSection.synonyms.map((syn, idx) => (
                     <TextBold
                       key={idx}
                       style={{ color: colors.accent, marginLeft: 10, marginRight: 5, fontSize: 14 }}
@@ -236,13 +236,13 @@ const Home = () => {
               </View>
             )}
 
-            {definition?.antonyms.length > 0 && (
+            {meaningSection?.antonyms.length > 0 && (
               <View style={styles.sectionRow}>
                 <Text style={{ fontSize: 16, color: colors.subHeading }}>
                   Antonyms
                 </Text>
                 <View style={styles.wrappingList}>
-                  {definition.antonyms.map((ant, idx) => (
+                  {meaningSection.antonyms.map((ant, idx) => (
                     <TextBold
                       key={idx}
                       style={{ color: colors.accent, marginLeft: 10, marginRight: 5, fontSize: 14 }}
@@ -256,6 +256,7 @@ const Home = () => {
           </View>
         ))}
 
+        {/* Sources */}
         <View style={{marginBottom: 50}}>
           <HorizontalLine style={{ marginTop: 40 }} />
           <Text
@@ -285,7 +286,12 @@ const Home = () => {
     <Layout>
       <ScrollView style={{ padding: 20 }} keyboardShouldPersistTaps='handled' testID='home-screen'>
         <View
-          style={[{ backgroundColor: colors.backgroundSecondary }, styles.searchBar]}
+          style={[
+            { backgroundColor: colors.backgroundSecondary },
+            textInputBorder,
+            (errorMsg && { borderColor: colors.error }), // 2nd
+            styles.searchBar
+          ]}
           testID='current-background-color'
         >
           <TextInput
@@ -298,10 +304,18 @@ const Home = () => {
             value={typedWord}
             onSubmitEditing={handleSearch}
             onChangeText={text => setTypedWord(text)}
+            onFocus={() => setTextInputActive(true)}
+            onBlur={() => setTextInputActive(false)}
+            // ref={textInputRef}
           />
           <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
             <IconSearch color={colors.accent} />
           </TouchableOpacity>
+        </View>
+        <View style={styles.errorMsgView}>
+          <Text style={{ color: colors.error }}>
+            {errorMsg}
+          </Text>
         </View>
         <WordInfo />
       </ScrollView>
@@ -315,6 +329,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 20,
     height: 50,
+    borderWidth: 1,
   },
   searchInput: {
     flex: 1,
@@ -330,6 +345,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 50,
     height: 50,
+  },
+  errorMsgView: {
+    marginTop: 5,
+    marginLeft: 25,
   },
 
   bulletPoint: {
