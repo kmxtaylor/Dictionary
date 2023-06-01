@@ -292,6 +292,7 @@ const Home = () => {
             (errorMsg && { borderColor: colors.error }), // 2nd
             styles.searchBar
           ]}
+          testID='current-background-color'
         >
           <TextInput
             style={[
