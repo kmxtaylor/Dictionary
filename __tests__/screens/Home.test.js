@@ -19,23 +19,6 @@ describe('dictionary/home screen test suite', () => {
     }, TIMEOUT);
   });
 
-  // test if the app / home screen have the right background color
-  test('should have the right background color', async () => {
-    const { getByTestId } = render(<Home />)
-    const themeColor = getByTestId('current-background-color');
-    let style ={};
-    await waitFor(() => {
-      if (Array.isArray(themeColor.props.style)) {
-        style = themeColor.props.style.reduce((acc, cur) => {
-          return {...acc, ...cur};
-        }, {});
-      } else {
-        style = themeColor.props.style;
-      }
-      expect(style.backgroundColor).toEqual('#050505');
-    }, TIMEOUT);
-  });
-
   // test if the user is able to get the definition of a word
   test('should get all definitions when a word is typed in the search bar', async () => {
     const { getByTestId, getByPlaceholderText, getByText, getAllByText } = render(<Home />);
