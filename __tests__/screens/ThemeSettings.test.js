@@ -31,7 +31,14 @@ describe('theme settings screen test suite', () => {
       </ThemeProvider>
     );
 
-    // check that background started on dark theme
+    // press button w/ text 'dark'
+    await waitFor(() => {
+      const lightThemeButton = getByText('dark');
+      // console.log(lightThemeButton);
+      fireEvent.press(lightThemeButton);
+    }, TIMEOUT);
+
+    // check that background matches dark theme
     await waitFor(() => {
       const themeSettingsScreen = getByTestId('theme-settings-screen');
       // console.log(themeSettingsScreen.props.style);
@@ -57,7 +64,7 @@ describe('theme settings screen test suite', () => {
       fireEvent.press(lightThemeButton);
     }, TIMEOUT);
 
-    // check that background changed to light theme
+    // check that background matches light theme
     await waitFor(() => {
       const themeSettingsScreen = getByTestId('theme-settings-screen');
       // console.log(themeSettingsScreen.props.style);
