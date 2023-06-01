@@ -60,7 +60,7 @@ describe('theme settings screen test suite', () => {
     // press button w/ text 'light'
     await waitFor(() => {
       const lightThemeButton = getByText('light');
-      // console.log(lightThemeButton);
+      console.log(lightThemeButton.props.style);
       fireEvent.press(lightThemeButton);
     }, TIMEOUT);
 
@@ -78,8 +78,8 @@ describe('theme settings screen test suite', () => {
       } else {
         style = themeSettingsScreen.props.style;
       }
-      console.log('background (#FFFFFF)', style.backgroundColor);
-      console.log(`Colors['light']`, Colors['light']);
+      // console.log('background (#FFFFFF)', style.backgroundColor);
+      // console.log(`Colors['light']`, Colors['light']);
       expect(style.backgroundColor).toEqual(Colors['light'].background);
     }, TIMEOUT);
 
