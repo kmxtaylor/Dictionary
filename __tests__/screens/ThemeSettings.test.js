@@ -31,6 +31,7 @@ describe('theme settings screen test suite', () => {
       </ThemeProvider>
     );
 
+    // check that background started on dark theme
     await waitFor(() => {
       const themeSettingsScreen = getByTestId('theme-settings-screen');
       // console.log(themeSettingsScreen.props.style);
@@ -50,28 +51,30 @@ describe('theme settings screen test suite', () => {
     }, TIMEOUT);
 
     // press button w/ text 'light'
-    // await waitFor(() => {
-    //   const lightThemeButton = getByText('light');
-    //   // console.log(lightThemeButton);
-    //   fireEvent.press(lightThemeButton);
-    // }, TIMEOUT);
+    await waitFor(() => {
+      const lightThemeButton = getByText('light');
+      // console.log(lightThemeButton);
+      fireEvent.press(lightThemeButton);
+    }, TIMEOUT);
 
-    // await waitFor(() => {
-    //   const themeSettingsScreen = getByTestId('theme-settings-screen');
-    //   let style ={};
-  
-    // flatten style array to single obj
-    //   if (Array.isArray(themeSettingsScreen.props.style)) {
-    //     style = themeSettingsScreen.props.style.reduce((acc, cur) => {
-    //       return {...acc, ...cur};
-    //     }, {});
-    //   } else {
-    //     style = themeSettingsScreen.props.style;
-    //   }
-    //   // console.log('changed background (NOT #050505)', style.backgroundColor);
-    //   // expect(style.backgroundColor).toEqual(Colors['light'].backgroundColor);
-    //   expect(style.backgroundColor).not.toEqual(Colors['dark'].backgroundColor);
-    // }, TIMEOUT);
+    // check that background changed to light theme
+    await waitFor(() => {
+      const themeSettingsScreen = getByTestId('theme-settings-screen');
+      // console.log(themeSettingsScreen.props.style);
+      let style ={};
+
+      // flatten style array to single obj
+      if (Array.isArray(themeSettingsScreen.props.style)) {
+        style = themeSettingsScreen.props.style.reduce((acc, cur) => {
+          return {...acc, ...cur};
+        }, {});
+      } else {
+        style = themeSettingsScreen.props.style;
+      }
+      console.log('background (#FFFFFF)', style.backgroundColor);
+      console.log(`Colors['light']`, Colors['light']);
+      expect(style.backgroundColor).toEqual(Colors['light'].background);
+    }, TIMEOUT);
 
   });
 
