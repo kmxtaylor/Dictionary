@@ -90,12 +90,6 @@ describe('dictionary/home screen test suite', () => {
       expect(errorMessage).toBeDefined();
     }, 15000);
   });
-     
 
-
-
-
-
-  
 
 });
