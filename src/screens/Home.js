@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { TextInput, StyleSheet, TouchableOpacity, Linking, LogBox } from 'react-native';
 import axios from 'axios';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -15,7 +15,6 @@ import { useFont } from 'hooks/useFont';
 import FontMappings from 'constants/FontMappings';
 
 import { Audio, Permissions } from 'expo-av';
-//import { set } from 'react-native-reanimated';
 
 const Home = () => {
   const [typedWord, setTypedWord] = useState('');
@@ -30,9 +29,11 @@ const Home = () => {
   // const [examples, setExamples] = useState([]);
   const [sourceUrls, setSourceUrls] = useState('');
   const [errorMsg, setErrorMsg] = useState(null);
-
-  const { colors } = useTheme();
+  
   const { font } = useFont();
+  const { colors } = useTheme();
+
+  const [textInputBorder, setTextInputBorder] = useState({borderColor: colors.backgroundSecondary});
 
   const isMountedRef = useIsMountedRef();
 
@@ -125,6 +126,26 @@ const Home = () => {
         // alert(err); // delete this when you code an official display of the msg
       }
     }
+  };
+
+  // const textInputRef = useRef(null);
+
+  // errorMsg changes after onFocus/onBlur triggered, catch changes in errorMsg
+  useEffect(() => {
+    setTextInputActive(errorMsg);
+  }, [errorMsg]);
+
+  const setTextInputActive = (isActive) => {
+    const inactiveColor = errorMsg ? colors.error : colors.backgroundSecondary;
+    const activeColor = colors.accent;
+
+    const borderColor = isActive ? activeColor : inactiveColor;
+    // const borderColor = textInputRef.current?.isFocused ? activeColor : inactiveColor;
+
+
+    console.log('isActive:', isActive, 'borderColor:', borderColor);
+    // console.log('textInputRef.current?.isFocused: ', textInputRef.current?.isFocused, 'borderColor:', borderColor);
+    setTextInputBorder({ borderColor: borderColor, });
   };
 
   const playAudio = async () => {
@@ -286,7 +307,8 @@ const Home = () => {
         <View
           style={[
             { backgroundColor: colors.backgroundSecondary },
-            (errorMsg && { borderColor: colors.error, borderWidth: 1 }), 
+            textInputBorder,
+            (errorMsg && { borderColor: colors.error }), // 2nd
             styles.searchBar
           ]}
         >
@@ -300,6 +322,9 @@ const Home = () => {
             value={typedWord}
             onSubmitEditing={handleSearch}
             onChangeText={text => setTypedWord(text)}
+            onFocus={() => setTextInputActive(true)}
+            onBlur={() => setTextInputActive(false)}
+            // ref={textInputRef}
           />
           <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
             <IconSearch color={colors.accent} />
@@ -322,6 +347,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 20,
     height: 50,
+    borderWidth: 1,
   },
   searchInput: {
     flex: 1,
