@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from 'constants/Colors';
 
 const Themes = ['light', 'dark'];
@@ -17,19 +17,19 @@ const ThemeProvider = ({ children }) => {
   const colors = Colors[theme];
 
   // uncomment after confirming everything else works:
-  // useEffect(() => {
-  //   AsyncStorage.getItem('@user_preferred_theme')
-  //     .then((storedTheme) => {
-  //       if (storedTheme) {
-  //         setTheme(storedTheme);
-  //       }
-  //     })
-  //     .finally(() => setLoading(false));
-  // }, []);
+  useEffect(() => {
+    AsyncStorage.getItem('@user_preferred_theme')
+      .then((storedTheme) => {
+        if (storedTheme) {
+          setTheme(storedTheme);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
-  // useEffect(() => {
-  //   AsyncStorage.setItem('@user_preferred_theme', theme);
-  // }, [theme]);
+  useEffect(() => {
+    AsyncStorage.setItem('@user_preferred_theme', theme);
+  }, [theme]);
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, loading, colors }}>
