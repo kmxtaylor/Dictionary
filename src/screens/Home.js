@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { TextInput, StyleSheet, TouchableOpacity, Linking, LogBox } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import axios from 'axios';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -14,7 +14,7 @@ import { useTheme } from 'hooks/useTheme';
 import { useFont } from 'hooks/useFont';
 import FontMappings from 'constants/FontMappings';
 
-import { Audio, Permissions } from 'expo-av';
+import { Audio } from 'expo-av';
 
 const Home = () => {
   const [typedWord, setTypedWord] = useState('');
@@ -23,10 +23,6 @@ const Home = () => {
   const [audioURL, setAudioURL] = useState('');
   const [phonetic, setPhonetic] = useState(null);
   const [meanings, setMeanings] = useState(null);
-  // const [partOfSpeech, setPartOfSpeech] = useState('');
-  // const [synonyms, setSynonyms] = useState([]);
-  // const [antonyms, setAntonyms] = useState([]);
-  // const [examples, setExamples] = useState([]);
   const [sourceUrls, setSourceUrls] = useState('');
   const [errorMsg, setErrorMsg] = useState(null);
   
@@ -43,10 +39,6 @@ const Home = () => {
     setAudioURL('');
     setPhonetic('');
     setMeanings(null);
-    // setPartOfSpeech('');
-    // setSynonyms([]);
-    // setAntonyms([]);
-    // setExamples([]); //
     setSourceUrls(null);
 
     // don't reset errorMsg here, in case error is not resolved
@@ -57,7 +49,6 @@ const Home = () => {
       if (typedWord === '') {
         let err = `Search can't be blank.`
         setErrorMsg(err);
-        // alert(err); // delete this when you code an official display of the msg
         return;
       }
 
@@ -72,26 +63,21 @@ const Home = () => {
         // Check if phonetics exist and contain audio URLs.
         if (data?.phonetics.length > 0) { // don't error out if no phonetics
           const [ audioUrl ] = data.phonetics
-            .filter(phonetic => phonetic.audio) // Filter out phonetics without audio URLs
-            .map(phonetic => phonetic.audio); // Extract audio URLs
+            .filter(phonetic => phonetic.audio) // filter out phonetics without audio URLs
+            .map(phonetic => phonetic.audio); // extract audio URLs
 
           setAudioURL(audioUrl ?? '');
         } else {
-          setAudioURL(''); // No phonetics available for the Audio component
+          setAudioURL('');
         }
-
-
-        LogBox.ignoreLogs(['Warning: Encountered two children with the same key, `[object Object]`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.']);
 
         /* explicitly re-set structure here for maintainable data management 
            (much easier to troubleshoot if the API changes)
         */
         const wordData = data.meanings.map((meaning, index) => {
-          // console.log(meaning?.definitions);
           return {
             key: index, // partially fixes duplicate key warning
             partOfSpeech: meaning?.partOfSpeech ?? '',
-            // definitions: meaning?.definitions ?? [],
             definitions: meaning?.definitions.map((defObj, idx) => {
               return {
                 definition: defObj.definition,
@@ -100,26 +86,11 @@ const Home = () => {
                 antonyms: defObj.antonyms ?? [], // currently unused
               }
             }),
-            // examples: meaning?.definitions.map((def, idx) => (
-            //   def.example ?? null
-            // )),
             synonyms: meaning?.synonyms ?? [],
             antonyms: meaning?.antonyms ?? [],
           };
         });
-        // const wordData = data.meanings;
-        // console.log('wordData:', wordData);
-        // console.log('wordData[0].definitions:', wordData[0].definitions);
-        // console.log(JSON.stringify(wordData, null, 2));
-        // console.log('wordData[0].definitions:', JSON.stringify(wordData[0].definitions, null, 2));
         setMeanings(wordData);
-
-
-        // these don't seem necessary(?) & should be handled by definition:
-        // setPartOfSpeech(data.meanings[0].partOfSpeech);
-        // setSynonyms(data.meanings[0].synonyms ?? []);
-        // setAntonyms(data.meanings[0].antonyms ?? []);
-        // setExamples(data.meanings.map(meaning => meaning.definitions.map(definition => definition.example ?? '')));
 
         setSourceUrls(data?.sourceUrls ?? []);
         setErrorMsg(null);
@@ -131,12 +102,10 @@ const Home = () => {
       if (error?.response?.status === 404) {
         let err = `Word not found. Try a different word.`
         setErrorMsg(err);
-        // alert(err); // delete this when you code an official display of the msg
       }
       else {
         let err = `Can't parse word data. Try again.`
         setErrorMsg(err);
-        // alert(err); // delete this when you code an official display of the msg
       }
     }
   };
