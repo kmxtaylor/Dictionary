@@ -59,19 +59,19 @@ describe('dictionary/home screen test suite', () => {
   test('should display error message when a word that is not in the dictionary is entered', async () => {
     const { getByTestId, getByPlaceholderText, getByText } = render(<Home />);
 
-    // enter a word that is not in the dictionary in the search input
-    const searchInput = getByPlaceholderText('Enter a word...');
-    fireEvent.changeText(searchInput, 'asdfghjkl');
-
-    // press the search button
-    const searchButton = getByTestId('search-button');
-    fireEvent.press(searchButton);
-
-    // wait for the error message to be displayed
     await waitFor(() => {
+      // enter a word that is not in the dictionary in the search input
+      const searchInput = getByPlaceholderText('Enter a word...');
+      fireEvent.changeText(searchInput, 'asdfghjkl');
+  
+      // press the search button
+      const searchButton = getByTestId('search-button');
+      fireEvent.press(searchButton);
+  
+      // wait for the error message to be displayed
       const errorMessage = getByText('Word not found. Try a different word.');
       expect(errorMessage).toBeDefined();
-    }, 15000);
+    }, TIMEOUT);
   });
 
 
