@@ -4,15 +4,24 @@ import ThemeSettings from 'screens/ThemeSettings';
 import Colors from 'constants/Colors';
 
 import { ThemeProvider } from 'contexts/Theme';
-import { useTheme } from 'hooks/useTheme';
 
 jest.setTimeout(10000);
 const TIMEOUT = { timeout: 10000 };
 
-describe('theme settings screen test suite', () => {
-  // testID='theme-settings-screen'
+// helper function to flatten style array to single obj
+const flattenStyle = (node) => {
+  if (Array.isArray(node.props.style)) {
+    style = node.props.style.reduce((acc, cur) => {
+      return {...acc, ...cur};
+    }, {});
+  } else {
+    style = node.props.style;
+  }
+  return style;
+};
 
-  // test if the app / theme settings screen renders correctly without crashing
+describe('theme settings screen test suite', () => {
+  // test if the theme settings screen renders correctly without crashing
   test('should render the theme settings screen', async () => {
     const { getByTestId } = render(<ThemeSettings />)
     await waitFor(() => {
@@ -21,68 +30,94 @@ describe('theme settings screen test suite', () => {
     }, TIMEOUT);
   });
 
-  // test changing theme (background color) from dark to light (if the screen starts w/ the dark background color & can be changed to color light background color)
-  test('should have the right background color', async () => {
-    // const { theme, colors } = useTheme();
-
+  // test setting theme to dark
+  test('should set theme to dark', async () => {
     const { getByTestId, getByText } = render(
       <ThemeProvider>
         <ThemeSettings />
       </ThemeProvider>
     );
 
-    // press button w/ text 'dark'
     await waitFor(() => {
-      const lightThemeButton = getByText('dark');
-      // console.log(lightThemeButton);
-      fireEvent.press(lightThemeButton);
-    }, TIMEOUT);
+      // press button w/ text 'dark'
+      const darkThemeButton = getByText('dark');
+      fireEvent.press(darkThemeButton);
 
-    // check that background matches dark theme
-    await waitFor(() => {
+      // check that background & text matches dark theme
       const themeSettingsScreen = getByTestId('theme-settings-screen');
-      // console.log(themeSettingsScreen.props.style);
-      let style ={};
+      let bg = flattenStyle(themeSettingsScreen);
+      let btnText = flattenStyle(darkThemeButton);
 
-      // flatten style array to single obj
-      if (Array.isArray(themeSettingsScreen.props.style)) {
-        style = themeSettingsScreen.props.style.reduce((acc, cur) => {
-          return {...acc, ...cur};
-        }, {});
-      } else {
-        style = themeSettingsScreen.props.style;
-      }
-      // console.log('initial background (#050505)', style.backgroundColor);
-      // console.log(`Colors['dark']`, Colors['dark']);
-      expect(style.backgroundColor).toEqual(Colors['dark'].background);
+      // console.log(bg);
+      // console.log(btnText);
+      // console.log(Colors['dark']);
+      expect(bg.backgroundColor).toEqual(Colors['dark'].background);
+      expect(btnText.color).toEqual(Colors['dark'].text);
     }, TIMEOUT);
-
-    // press button w/ text 'light'
-    await waitFor(() => {
-      const lightThemeButton = getByText('light');
-      console.log(lightThemeButton.props.style);
-      fireEvent.press(lightThemeButton);
-    }, TIMEOUT);
-
-    // check that background matches light theme
-    await waitFor(() => {
-      const themeSettingsScreen = getByTestId('theme-settings-screen');
-      // console.log(themeSettingsScreen.props.style);
-      let style ={};
-
-      // flatten style array to single obj
-      if (Array.isArray(themeSettingsScreen.props.style)) {
-        style = themeSettingsScreen.props.style.reduce((acc, cur) => {
-          return {...acc, ...cur};
-        }, {});
-      } else {
-        style = themeSettingsScreen.props.style;
-      }
-      // console.log('background (#FFFFFF)', style.backgroundColor);
-      // console.log(`Colors['light']`, Colors['light']);
-      expect(style.backgroundColor).toEqual(Colors['light'].background);
-    }, TIMEOUT);
-
   });
 
+  // test setting theme to light
+  test('should set theme to light', async () => {
+    const { getByTestId, getByText } = render(
+      <ThemeProvider>
+        <ThemeSettings />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      // press button w/ text 'light'
+      const lightThemeButton = getByText('light');
+      fireEvent.press(lightThemeButton);
+
+      // check that background & text matches light theme
+      const themeSettingsScreen = getByTestId('theme-settings-screen');
+      let bg = flattenStyle(themeSettingsScreen);
+      let btnText = flattenStyle(lightThemeButton);
+
+      // console.log(bg);
+      // console.log(btnText);
+      // console.log(Colors['light']);
+      expect(bg.backgroundColor).toEqual(Colors['light'].background);
+      expect(btnText.color).toEqual(Colors['light'].text);
+    }, TIMEOUT);
+  });
+
+  // test changing theme (background color) from dark to light (if the screen starts w/ the dark background color & can be changed to color light background color)
+  test('should check change background colors in succession', async () => {
+    const { getByTestId, getByText } = render(
+      <ThemeProvider>
+        <ThemeSettings />
+      </ThemeProvider>
+    );
+
+    // --> dark theme
+    await waitFor(() => {
+      // press button w/ text 'dark'
+      const darkThemeButton = getByText('dark');
+      fireEvent.press(darkThemeButton);
+
+      // check that background & text matches dark theme
+      const themeSettingsScreen = getByTestId('theme-settings-screen');
+      let bg = flattenStyle(themeSettingsScreen);
+      let btnText = flattenStyle(darkThemeButton);
+
+      expect(bg.backgroundColor).toEqual(Colors['dark'].background);
+      expect(btnText.color).toEqual(Colors['dark'].text);
+    }, TIMEOUT);
+
+    // --> light theme
+    await waitFor(() => {
+      // press button w/ text 'light'
+      const lightThemeButton = getByText('light');
+      fireEvent.press(lightThemeButton);
+
+      // check that background & text matches light theme
+      const themeSettingsScreen = getByTestId('theme-settings-screen');
+      let bg = flattenStyle(themeSettingsScreen);
+      let btnText = flattenStyle(lightThemeButton);
+
+      expect(bg.backgroundColor).toEqual(Colors['light'].background);
+      expect(btnText.color).toEqual(Colors['light'].text);
+    }, TIMEOUT);
+  });
 });
