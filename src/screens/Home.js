@@ -56,7 +56,7 @@ const Home = () => {
       if (typedWord === '') {
         let err = `Search can't be blank.`
         setErrorMsg(err);
-        alert(err); // delete this when you code an official display of the msg
+        // alert(err); // delete this when you code an official display of the msg
         return;
       }
 
@@ -115,14 +115,14 @@ const Home = () => {
       console.log('Error!:', error?.data?.title || error); // doesn't show to user
       console.log('Error (detailed):', JSON.stringify(error.response, null, 2)); // doesn't show to user
       if (error?.response?.status === 404) {
-        let err = `Word not found. Try again.`
+        let err = `Word not found. Try a different word.`
         setErrorMsg(err);
-        alert(err); // delete this when you code an official display of the msg
+        // alert(err); // delete this when you code an official display of the msg
       }
       else {
         let err = `Can't parse word data. Try again.`
         setErrorMsg(err);
-        alert(err); // delete this when you code an official display of the msg
+        // alert(err); // delete this when you code an official display of the msg
       }
     }
   };
@@ -163,12 +163,11 @@ const Home = () => {
 
     return (
       <View style={styles.wordInfoContainer}>
-        <View style={styles.topRow}>
+        <View style={[styles.topRow, {marginTop: 10}]}>
           <View>
             <View>
               <TextBold style={styles.foundWord}>{foundWord}</TextBold>
             </View>
-            {/* Display the phonetic */}
             {phonetic && (
               <Text
                 style={{ color: colors.accent, marginTop: 10, fontSize: 20 }}
@@ -285,7 +284,11 @@ const Home = () => {
     <Layout>
       <ScrollView style={{ padding: 20 }} keyboardShouldPersistTaps='handled' testID='home-screen'>
         <View
-          style={[{ backgroundColor: colors.backgroundSecondary }, styles.searchBar]}
+          style={[
+            { backgroundColor: colors.backgroundSecondary },
+            (errorMsg && { borderColor: colors.error, borderWidth: 1 }), 
+            styles.searchBar
+          ]}
         >
           <TextInput
             style={[
@@ -301,6 +304,11 @@ const Home = () => {
           <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
             <IconSearch color={colors.accent} />
           </TouchableOpacity>
+        </View>
+        <View style={styles.errorMsgView}>
+          <Text style={{ color: colors.error }}>
+            {errorMsg}
+          </Text>
         </View>
         <WordInfo />
       </ScrollView>
@@ -329,6 +337,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 50,
     height: 50,
+  },
+  errorMsgView: {
+    marginTop: 5,
+    marginLeft: 25,
   },
 
   bulletPoint: {
