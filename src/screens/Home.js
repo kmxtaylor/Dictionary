@@ -225,9 +225,9 @@ const Home = () => {
                   <Text style={{ color: colors.text, fontSize: 14 }}>{def}</Text>
 
                   {definition?.examples?.map((example, i) => (
-                    example && (
+                    example && (i === idx) && (
                       <Text
-                        key={{i}}
+                        key={example.slice(0,5)}
                         style={[{ color: colors.subHeading, fontSize: 14 }, styles.exampleRow]}
                       >
                         "{example}"
