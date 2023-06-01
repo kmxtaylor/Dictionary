@@ -122,7 +122,7 @@ const Home = () => {
     // const borderColor = textInputRef.current?.isFocused ? activeColor : inactiveColor;
 
 
-    console.log('isActive:', isActive, 'borderColor:', borderColor);
+    // console.log('isActive:', isActive, 'borderColor:', borderColor);
     // console.log('textInputRef.current?.isFocused: ', textInputRef.current?.isFocused, 'borderColor:', borderColor);
     setTextInputBorder({ borderColor: borderColor, });
   };
