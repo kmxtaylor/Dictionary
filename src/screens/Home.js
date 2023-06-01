@@ -83,23 +83,31 @@ const Home = () => {
 
         LogBox.ignoreLogs(['Warning: Encountered two children with the same key, `[object Object]`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.']);
 
-        // const wordData = data.meanings.map((meaning, index) => {
-        //   // console.log(meaning?.definitions);
-        //   return {
-        //     key: index, // partially fixes duplicate key warning
-        //     partOfSpeech: meaning?.partOfSpeech ?? '',
-        //     definitions: meaning?.definitions ?? [],
-        //     // definitions: meaning?.definitions.map((def, idx) => (
-        //     //   def.definition ?? null
-        //     // )),
-        //     // examples: meaning?.definitions.map((def, idx) => (
-        //     //   def.example ?? null
-        //     // )),
-        //     synonyms: meaning?.synonyms ?? [],
-        //     antonyms: meaning?.antonyms ?? [],
-        //   };
-        // });
-        const wordData = data.meanings;
+        /* explicitly re-set structure here for maintainable data management 
+           (much easier to troubleshoot if the API changes)
+        */
+        const wordData = data.meanings.map((meaning, index) => {
+          // console.log(meaning?.definitions);
+          return {
+            key: index, // partially fixes duplicate key warning
+            partOfSpeech: meaning?.partOfSpeech ?? '',
+            // definitions: meaning?.definitions ?? [],
+            definitions: meaning?.definitions.map((defObj, idx) => {
+              return {
+                definition: defObj.definition,
+                example: defObj.example ?? null,
+                synonyms: defObj.synonyms ?? [], // currently unused
+                antonyms: defObj.antonyms ?? [], // currently unused
+              }
+            }),
+            // examples: meaning?.definitions.map((def, idx) => (
+            //   def.example ?? null
+            // )),
+            synonyms: meaning?.synonyms ?? [],
+            antonyms: meaning?.antonyms ?? [],
+          };
+        });
+        // const wordData = data.meanings;
         // console.log('wordData:', wordData);
         // console.log('wordData[0].definitions:', wordData[0].definitions);
         // console.log(JSON.stringify(wordData, null, 2));
