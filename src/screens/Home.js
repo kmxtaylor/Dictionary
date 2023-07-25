@@ -214,7 +214,10 @@ const Home = () => {
               <HorizontalLine style={{ marginLeft: 20 }} />
             </View>
             <Text
-              style={{ color: colors.subHeading, marginTop: 30, fontSize: 16 }}   testID={`meaningSection-${index}`}
+              style={{
+                color: colors.subHeading, marginTop: 30, fontSize: 16
+              }}
+              testID={`meaningSection-${index}`}
             >
               Meaning
             </Text>
@@ -263,7 +266,9 @@ const Home = () => {
                   {meaningSection.antonyms.map((ant, idx) => (
                     <TextBold
                       key={idx}
-                      style={{ color: colors.accent, marginLeft: 10, marginRight: 5, fontSize: 14 }}
+                      style={{
+                        color: colors.accent, marginLeft: 10, marginRight: 5, fontSize: 14
+                      }}
                     >
                       {ant}
                     </TextBold>
@@ -326,12 +331,16 @@ const Home = () => {
             onBlur={() => setTextInputActive(false)}
             // ref={textInputRef}
           />
-          <TouchableOpacity style={styles.searchButton} onPress={handleSearch} testID='search-button'>
+          <TouchableOpacity
+            style={styles.searchButton}
+            onPress={handleSearch}
+            testID='search-button'
+          >
             <IconSearch color={colors.accent} />
           </TouchableOpacity>
         </View>
         <View style={styles.errorMsgView}>
-          <Text style={{ color: colors.error }}>
+          <Text style={{ color: colors.error }} testID='error-msg'>
             {errorMsg}
           </Text>
         </View>

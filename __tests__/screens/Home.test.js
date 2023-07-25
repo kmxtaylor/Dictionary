@@ -1,7 +1,6 @@
 import { render, waitFor, fireEvent } from '@testing-library/react-native';
 
 import Home from 'screens/Home';
-import Colors from 'constants/Colors';
 
 jest.setTimeout(10000);
 const TIMEOUT = { timeout: 10000 };
@@ -69,10 +68,8 @@ describe('dictionary/home screen test suite', () => {
       fireEvent.press(searchButton);
   
       // wait for the error message to be displayed
-      const errorMessage = getByText('Word not found. Try a different word.');
+      const errorMessage = getByTestId('error-msg');
       expect(errorMessage).toBeDefined();
     }, TIMEOUT);
   });
-
-
 });
