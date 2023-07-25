@@ -26,6 +26,7 @@ const Home = () => {
   const [meanings, setMeanings] = useState(null);
   const [sourceUrls, setSourceUrls] = useState('');
   const [errorMsg, setErrorMsg] = useState(null);
+  const [loading, setLoading] = useState(false);
   
   const { font } = useFont();
   const { colors } = useTheme();
@@ -50,6 +51,8 @@ const Home = () => {
         setErrorMsg(err);
         return;
       }
+
+      setLoading(true);
 
       const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${typedWord}`);
       const [ data ] = response.data;
@@ -105,6 +108,8 @@ const Home = () => {
         setErrorMsg(err);
       }
     }
+
+    setLoading(false);
   };
 
   // const textInputRef = useRef(null);
@@ -157,7 +162,20 @@ const Home = () => {
   );
 
   const WordInfo = ({ ...props }) => {
-    if (!foundWord) {
+    if (loading) {
+      return (
+        <View style={styles.wordInfoContainer}>
+          <View style={[styles.topRow, {marginTop: 10}]}>
+            <TextBold style={{ color: colors.text, fontSize: 20 }}>
+              Loading...
+            </TextBold>
+          </View>
+        </View>
+      );
+    }
+
+    // initial state, before words searched + not loading
+    else if (!foundWord) {
       return null;
     }
 
