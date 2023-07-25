@@ -56,6 +56,7 @@ const Home = () => {
       }
       
       if (isMountedRef.current) { // avoid bugs w/ state updates to unmounted components
+        setErrorMsg(null);
         setLoading(true);
         resetWordStates(); // reset states before setting new states (in case fewer data states are defined for this word than the previous)
   
@@ -97,7 +98,6 @@ const Home = () => {
         setMeanings(wordData);
 
         setSourceUrls(data?.sourceUrls ?? []);
-        setErrorMsg(null);
       }
     } catch (error) {
       // console.log('Error!:', error?.data?.title || error); // doesn't show to user
