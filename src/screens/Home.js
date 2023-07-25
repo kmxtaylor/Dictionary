@@ -48,17 +48,20 @@ const Home = () => {
     try {
       if (typedWord === '') {
         let err = `Search can't be blank.`
-        setErrorMsg(err);
+        if (isMountedRef.current) { // avoid bugs w/ state updates to unmounted components
+          resetWordStates();
+          setErrorMsg(err);
+        }
         return;
       }
-
-      setLoading(true);
-
-      const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${typedWord}`);
-      const [ data ] = response.data;
-
+      
       if (isMountedRef.current) { // avoid bugs w/ state updates to unmounted components
+        setLoading(true);
         resetWordStates(); // reset states before setting new states (in case fewer data states are defined for this word than the previous)
+  
+        const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${typedWord}`);
+        const [ data ] = response.data;
+
         setFoundWord(data.word);
         setPhonetic(data?.phonetic ?? null); // Set the phonetic of the word
 
@@ -100,7 +103,7 @@ const Home = () => {
       // console.log('Error!:', error?.data?.title || error); // doesn't show to user
       // console.log('Error (detailed):', JSON.stringify(error.response, null, 2)); // doesn't show to user
       if (error?.response?.status === 404) {
-        let err = `Word not found. Try a different word.`
+        let err = `Word '${typedWord}' not found. Try a different word.`
         setErrorMsg(err);
       }
       else {
@@ -363,7 +366,7 @@ const styles = StyleSheet.create({
   },
   errorMsgView: {
     marginTop: 5,
-    marginLeft: 25,
+    paddingHorizontal: 25,
   },
 
   bulletPoint: {
